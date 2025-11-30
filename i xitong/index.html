@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="重生之路">
+    <title>朱格辉:重生之路</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #c41e3a; --primary-dark: #8b0000; --success: #228b22; --gold: #ffd700; --dark: #1a1a2e; --card: rgba(26,26,46,0.9); --text: #f0f0f0; --text-dim: #a0a0a0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: linear-gradient(135deg, rgba(13,27,42,0.95) 0%, rgba(27,38,59,0.95) 50%, rgba(45,58,74,0.95) 100%), 
+                        url('christmas-bg.png') center/cover fixed; 
+            min-height: 100vh; 
+            color: var(--text); 
+            padding-bottom: env(safe-area-inset-bottom); 
+            overflow-x: hidden; 
+        }
+        
+        /* 大雪花 */
+        .snowflakes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; overflow: hidden; }
+        .snowflake { position: absolute; top: -60px; color: white; text-shadow: 0 0 15px rgba(255,255,255,0.9); animation: fall linear infinite; }
+        @keyframes fall { 0% { transform: translateY(-60px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0.3; } }
+        .snowflake:nth-child(1) { left: 5%; animation-duration: 12s; font-size: 32px; }
+        .snowflake:nth-child(2) { left: 12%; animation-duration: 16s; animation-delay: 1s; font-size: 40px; }
+        .snowflake:nth-child(3) { left: 20%; animation-duration: 14s; animation-delay: 2s; font-size: 28px; }
+        .snowflake:nth-child(4) { left: 28%; animation-duration: 18s; animation-delay: 0.5s; font-size: 36px; }
+        .snowflake:nth-child(5) { left: 36%; animation-duration: 13s; animation-delay: 3s; font-size: 24px; }
+        .snowflake:nth-child(6) { left: 44%; animation-duration: 15s; animation-delay: 1.5s; font-size: 34px; }
+        .snowflake:nth-child(7) { left: 52%; animation-duration: 17s; animation-delay: 2.5s; font-size: 30px; }
+        .snowflake:nth-child(8) { left: 60%; animation-duration: 14s; animation-delay: 0.8s; font-size: 42px; }
+        .snowflake:nth-child(9) { left: 68%; animation-duration: 19s; animation-delay: 3.5s; font-size: 26px; }
+        .snowflake:nth-child(10) { left: 76%; animation-duration: 12s; animation-delay: 1.2s; font-size: 32px; }
+        .snowflake:nth-child(11) { left: 84%; animation-duration: 15s; animation-delay: 4s; font-size: 38px; }
+        .snowflake:nth-child(12) { left: 92%; animation-duration: 13s; animation-delay: 2.2s; font-size: 28px; }
+        
+        /* 圣诞灯 */
+        .christmas-lights { position: fixed; top: 0; left: 0; width: 100%; height: 35px; display: flex; justify-content: space-around; z-index: 999; padding: 8px; background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent); }
+        .light { width: 14px; height: 14px; border-radius: 50%; animation: glow 1.5s ease-in-out infinite alternate; }
+        .light:nth-child(odd) { background: #ff0000; box-shadow: 0 0 10px #ff0000; }
+        .light:nth-child(even) { background: #00ff00; animation-delay: 0.75s; box-shadow: 0 0 10px #00ff00; }
+        .light:nth-child(3n) { background: #ffd700; animation-delay: 0.5s; box-shadow: 0 0 10px #ffd700; }
+        @keyframes glow { 0% { box-shadow: 0 0 5px currentColor; opacity: 0.5; } 100% { box-shadow: 0 0 20px currentColor; opacity: 1; } }
+        
+        /* 圣诞树装饰 */
+        .tree-decor { position: fixed; z-index: 5; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4)); animation: float 3s ease-in-out infinite; }
+        .tree-1 { bottom: 15px; left: 15px; width: 90px; }
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-12px) rotate(3deg); } }
+        
+        /* 圣诞老人 */
+        .santa-decor { position: fixed; top: 55px; right: 15px; width: 75px; z-index: 5; animation: santaWave 2s ease-in-out infinite; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); border-radius: 50%; }
+        @keyframes santaWave { 0%, 100% { transform: rotate(-5deg) scale(1); } 50% { transform: rotate(5deg) scale(1.08); } }
+        
+        /* 音乐按钮 */
+        .music-btn { position: fixed; top: 50px; left: 15px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--primary), var(--success)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; z-index: 1001; cursor: pointer; border: 3px solid var(--gold); box-shadow: 0 4px 15px rgba(255,215,0,0.4); }
+        .music-btn.playing { animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 10px var(--gold); } 50% { box-shadow: 0 0 30px var(--gold); } }
+        
+        /* 新增：等级系统样式 */
+        .level-badge { display: inline-block; background: linear-gradient(135deg, var(--gold), #ffed4e); color: var(--dark); padding: 4px 12px; border-radius: 15px; font-weight: bold; font-size: 14px; margin-left: 10px; box-shadow: 0 2px 8px rgba(255,215,0,0.4); }
+        .level-progress { margin: 15px 0; }
+        .level-info-text { font-size: 12px; color: var(--text-dim); margin-top: 5px; text-align: center; }
+        
+        /* 新增：金钱管理样式 */
+        .money-display { background: linear-gradient(135deg, #2ecc71, #27ae60); padding: 15px; border-radius: 15px; margin: 10px 0; text-align: center; box-shadow: 0 4px 12px rgba(46,204,113,0.3); }
+        .money-amount { font-size: 32px; font-weight: bold; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .money-label { font-size: 12px; color: rgba(255,255,255,0.9); margin-top: 5px; }
+        .transaction-item { background: var(--card); padding: 12px; border-radius: 10px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; }
+        .transaction-desc { flex: 1; }
+        .transaction-amount { font-weight: bold; font-size: 16px; }
+        .transaction-amount.income { color: #2ecc71; }
+        .transaction-amount.expense { color: #e74c3c; }
+        .transaction-date { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+        
+        /* 新增：自定义内容样式 */
+        .custom-note { background: var(--card); padding: 15px; border-radius: 12px; margin: 10px 0; border-left: 4px solid var(--primary); }
+        .custom-note-title { font-weight: bold; margin-bottom: 8px; color: var(--gold); }
+        .custom-note-content { font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+        .custom-goal { background: linear-gradient(135deg, rgba(196,30,58,0.2), rgba(139,0,0,0.2)); padding: 12px; border-radius: 10px; margin: 8px 0; border: 1px solid var(--primary); }
+        .goal-checkbox { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--gold); border-radius: 4px; margin-right: 10px; vertical-align: middle; cursor: pointer; }
+        .goal-checkbox.checked { background: var(--gold); }
+        .goal-checkbox.checked::after { content: '✓'; color: var(--dark); font-weight: bold; display: block; text-align: center; line-height: 16px; }
+        
+        .app-container { max-width: 500px; margin: 0 auto; padding: 20px 15px; padding-top: calc(60px + env(safe-area-inset-top)); position: relative; z-index: 10; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 28px; background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b); background-size: 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 5s ease infinite; }
+        @keyframes rainbow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .header .subtitle { color: var(--text-dim); font-size: 14px; }
+        .header .christmas-greeting { color: var(--gold); font-size: 13px; margin-top: 8px; animation: twinkle 2s ease-in-out infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .day-display { display: inline-block; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 10px 25px; border-radius: 25px; font-weight: bold; margin-top: 12px; border: 3px solid var(--gold); box-shadow: 0 0 20px rgba(255,215,0,0.4); }
+        
+        .nav-tabs { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px; }
+        .nav-tab { flex-shrink: 0; padding: 10px 14px; background: var(--card); border: 1px solid rgba(255,215,0,0.2); border-radius: 12px; color: var(--text-dim); font-size: 13px; cursor: pointer; }
+        .nav-tab.active { background: linear-gradient(135deg, var(--primary), var(--success)); color: white; border-color: var(--gold); box-shadow: 0 0 15px rgba(255,215,0,0.4); }
+        
+        .card { background: var(--card); border-radius: 18px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,215,0,0.15); box-shadow: 0 8px 25px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary), var(--success), var(--gold), var(--primary)); background-size: 200%; animation: shimmer 3s linear infinite; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .card-title { font-size: 17px; font-weight: bold; margin-bottom: 15px; }
+        
+        .stat-item { margin-bottom: 14px; }
+        .stat-header { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
+        .stat-bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
+        .rank-progress-container { width:100%; max-width:300px; margin:0 auto; }
+        .rank-progress-bar { height:16px; background:rgba(255,255,255,0.1); border-radius:8px; overflow:hidden; }
+        .rank-progress-fill { height:100%; background:linear-gradient(90deg, var(--gold), #FFD700); transition:width 0.5s; box-shadow:0 0 10px var(--gold); }
+        
+        /* v5.0 段位图标增强 */
+        #rankIcon { 
+            font-size:64px; 
+            margin-bottom:10px; 
+            filter: drop-shadow(0 0 20px currentColor);
+            animation: rankGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes rankGlow {
+            0% { filter: drop-shadow(0 0 10px currentColor); transform: scale(1); }
+            100% { filter: drop-shadow(0 0 25px currentColor); transform: scale(1.05); }
+        }
+        #rankTier {
+            font-size:12px;
+            color:var(--text-dim);
+            margin-bottom:5px;
+            letter-spacing:2px;
+            text-transform:uppercase;
+        }
+        #rankName {
+            font-size:28px;
+            font-weight:bold;
+            margin-bottom:5px;
+            text-shadow: 0 0 15px currentColor;
+        }
+        #rankDesc {
+            font-size:14px;
+            color:var(--text-dim);
+            margin-bottom:20px;
+            font-style:italic;
+        }
+        .equipment-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:15px; }
+        .equipment-slot { background:rgba(255,255,255,0.05); border:2px solid rgba(255,215,0,0.3); border-radius:12px; padding:15px; text-align:center; cursor:pointer; transition:all 0.3s; position:relative; }
+        .equipment-slot:hover { border-color:var(--gold); background:rgba(255,215,0,0.1); transform:translateY(-2px); }
+        .slot-icon { font-size:32px; margin-bottom:8px; }
+        .slot-name { font-size:12px; color:var(--text-dim); margin-bottom:8px; }
+        .slot-item { font-size:14px; font-weight:bold; color:var(--text); min-height:20px; }
+        .slot-item.empty { color:var(--text-dim); font-weight:normal; }
+        .slot-rarity { position:absolute; top:8px; right:8px; font-size:10px; padding:2px 6px; border-radius:4px; font-weight:bold; }
+        .slot-rarity.ssr { background:#ff6b6b; color:white; }
+        .slot-rarity.sr { background:#a29bfe; color:white; }
+        .slot-rarity.r { background:#74b9ff; color:white; }
+        .slot-rarity.n { background:#b2bec3; color:white; }
+        .equipment-inventory-item { background:rgba(255,255,255,0.05); border-radius:8px; padding:12px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+        .equipment-inventory-item:hover { background:rgba(255,215,0,0.1); }
+        .boss-card { background:rgba(255,255,255,0.05); border-left:4px solid #ff6b6b; border-radius:12px; padding:15px; margin-bottom:15px; }
+        .boss-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+        .boss-card-title { font-size:18px; font-weight:bold; }
+        .boss-difficulty { color:var(--gold); font-size:14px; }
+        .boss-desc { font-size:13px; color:var(--text-dim); margin-bottom:10px; }
+        .boss-tips { font-size:12px; background:rgba(255,215,0,0.1); padding:10px; border-radius:6px; margin-bottom:10px; }
+        .boss-stats { display:flex; gap:15px; font-size:12px; }
+        .boss-stat { color:var(--text-dim); }
+        .boss-stat strong { color:var(--text); }
+        .achievement-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:15px; }
+        .achievement-card { background:rgba(255,255,255,0.05); border-radius:12px; padding:15px; border-left:4px solid var(--text-dim); }
+        .achievement-card.unlocked { border-left-color:var(--gold); background:rgba(255,215,0,0.1); }
+        .achievement-icon { font-size:32px; margin-bottom:8px; }
+        .achievement-name { font-weight:bold; margin-bottom:5px; }
+        .achievement-desc { font-size:12px; color:var(--text-dim); margin-bottom:8px; }
+        .achievement-reward { font-size:12px; color:var(--gold); }
+        .stat-fill { height: 100%; border-radius: 6px; transition: width 0.5s; position: relative; }
+        .stat-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: shine 2s linear infinite; }
+        @keyframes shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .stat-fill.hp { background: linear-gradient(90deg, #c41e3a, #ff6b6b); }
+        .stat-fill.mp { background: linear-gradient(90deg, #1e90ff, #87ceeb); }
+        .stat-fill.exp { background: linear-gradient(90deg, #ffd700, #ffec8b); }
+        .stat-fill.attr { background: linear-gradient(90deg, #228b22, #90ee90); }
+        
+        .debuff-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .debuff-tag { padding: 7px 12px; border-radius: 15px; font-size: 11px; cursor: pointer; }
+        .debuff-tag.active { background: rgba(196,30,58,0.3); color: #ff9999; border: 1px solid rgba(196,30,58,0.5); }
+        .debuff-tag.cleared { background: rgba(34,139,34,0.3); color: #90ee90; border: 1px solid rgba(34,139,34,0.5); text-decoration: line-through; }
+        
+        .log-input-group { margin-bottom: 18px; }
+        .log-label { font-size: 13px; color: var(--gold); margin-bottom: 8px; display: block; font-weight: 600; }
+        .log-input { width: 100%; padding: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,215,0,0.3); border-radius: 12px; color: var(--text); font-size: 15px; }
+        .log-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 15px rgba(255,215,0,0.3); }
+        .time-input-group { display: flex; gap: 10px; align-items: center; }
+        .time-input { flex: 1; padding: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,215,0,0.3); border-radius: 12px; color: var(--text); font-size: 18px; text-align: center; }
+        .time-separator { font-size: 24px; color: var(--gold); font-weight: bold; }
+        .time-label { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 5px; }
+        
+        .rating-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+        .rating-btn { width: 42px; height: 42px; border: 2px solid rgba(255,215,0,0.3); background: rgba(255,255,255,0.05); border-radius: 12px; color: var(--text); font-size: 15px; font-weight: bold; cursor: pointer; }
+        .rating-btn.selected { background: linear-gradient(135deg, var(--primary), var(--success)); border-color: var(--gold); box-shadow: 0 0 15px rgba(255,215,0,0.4); }
+        
+        .save-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--success)); border: 3px solid var(--gold); border-radius: 15px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 6px 20px rgba(196,30,58,0.4); }
+        
+        .task-item { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+        .task-item.completed { border-left-color: var(--success); opacity: 0.7; }
+        .task-item.locked { border-left-color: #666; opacity: 0.5; background: rgba(255,255,255,0.02); }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .task-title { font-weight: bold; font-size: 14px; }
+        .task-exp { background: linear-gradient(135deg, var(--gold), #ffec8b); color: #333; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .task-check { display: flex; align-items: center; gap: 12px; padding: 10px 0; font-size: 14px; }
+        .checkbox { width: 26px; height: 26px; border: 2px solid var(--gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .checkbox.checked { background: linear-gradient(135deg, var(--success), #90ee90); border-color: var(--success); }
+        .checkbox.checked::after { content: '✓'; color: white; font-size: 16px; font-weight: bold; }
+        
+        .history-item { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
+        .history-date { font-size: 13px; color: var(--gold); margin-bottom: 10px; font-weight: 600; }
+        .history-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 12px; }
+        .history-stat { text-align: center; }
+        .history-stat-value { font-size: 22px; font-weight: bold; color: var(--gold); }
+        
+        .boss-warning { background: linear-gradient(135deg, rgba(196,30,58,0.2), rgba(139,0,0,0.2)); border: 1px solid rgba(196,30,58,0.4); border-radius: 15px; padding: 20px; margin-bottom: 15px; }
+        .boss-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: #ff9999; }
+        .boss-strategy { font-size: 13px; color: var(--text-dim); line-height: 1.8; }
+        
+        .quote-box { background: linear-gradient(135deg, rgba(196,30,58,0.15), rgba(34,139,34,0.15)); border-left: 4px solid var(--gold); padding: 20px; margin: 15px 0; font-style: italic; font-size: 15px; line-height: 1.8; border-radius: 0 15px 15px 0; }
+        .quote-author { text-align: right; color: var(--gold); font-size: 13px; margin-top: 12px; font-style: normal; font-weight: 600; }
+        
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 1100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.show { display: flex; }
+        .modal-content { background: linear-gradient(135deg, var(--dark), #2a2a4a); border-radius: 25px; padding: 30px; max-width: 320px; width: 100%; text-align: center; border: 3px solid var(--gold); box-shadow: 0 0 40px rgba(255,215,0,0.4); position: relative; }
+        .modal-content::before { content: '🎄'; position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 50px; }
+        .modal-icon { font-size: 65px; margin: 15px 0; }
+        .modal-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: var(--gold); }
+        .modal-desc { color: var(--text-dim); font-size: 14px; margin-bottom: 25px; }
+        .modal-btn { padding: 14px 40px; background: linear-gradient(135deg, var(--primary), var(--success)); border: 2px solid var(--gold); border-radius: 15px; color: white; font-size: 15px; font-weight: bold; cursor: pointer; }
+        
+        .fab { position: fixed; bottom: calc(30px + env(safe-area-inset-bottom)); right: 20px; width: 65px; height: 65px; background: linear-gradient(135deg, var(--primary), var(--success)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 6px 25px rgba(196,30,58,0.5); cursor: pointer; z-index: 50; border: 3px solid var(--gold); }
+        .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100; display:flex; align-items:center; justify-content:center; padding:20px; }
+        .modal-content { background:var(--card); border-radius:16px; max-height:90vh; overflow-y:auto; width:100%; box-shadow:0 10px 40px rgba(0,0,0,0.5); }
+        .modal-header { display:flex; justify-content:space-between; align-items:center; padding:20px; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .modal-header h2 { margin:0; font-size:20px; }
+        .modal-close { background:none; border:none; font-size:32px; color:var(--text); cursor:pointer; padding:0; width:40px; height:40px; }
+        .modal-body { padding:20px; }
+        
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-dim); }
+        .empty-icon { font-size: 55px; margin-bottom: 15px; opacity: 0.5; }
+        
+        .social-contact { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-bottom: 10px; }
+        .contact-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .contact-name { font-weight: bold; font-size: 15px; }
+        .contact-type { font-size: 11px; padding: 4px 10px; background: linear-gradient(135deg, var(--primary), var(--success)); border-radius: 10px; }
+        .intimacy-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .intimacy-fill { height: 100%; background: linear-gradient(90deg, #ff69b4, #ff1493); border-radius: 4px; }
+        
+        .achievement-item { display: flex; align-items: center; gap: 12px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 10px; }
+        .achievement-item.unlocked { background: rgba(34,139,34,0.15); border: 1px solid rgba(34,139,34,0.4); }
+        .achievement-icon { width: 48px; height: 48px; background: rgba(255,215,0,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .achievement-info { flex: 1; }
+        .achievement-name { font-weight: bold; font-size: 14px; }
+        .achievement-desc { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
+        
+        input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+        input[type="number"] { -moz-appearance: textfield; }
+        
+        /* v5.0 段位系统样式 */
+        .rank-badge { 
+            width: 80px; 
+            height: 80px; 
+            margin: 0 auto 15px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 48px; 
+            position: relative;
+            animation: rankGlow 2s ease-in-out infinite;
+        }
+        @keyframes rankGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px currentColor); }
+            50% { filter: drop-shadow(0 0 20px currentColor); }
+        }
+        .rank-tier-label { 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            opacity: 0.7;
+            font-weight: 500;
+        }
+    </style>
+
+</head>
+<body>
+    <audio id="bgMusic" loop><source src="bgm.mp3" type="audio/mpeg"></audio>
+    
+    <div class="snowflakes">
+        <div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div>
+        <div class="snowflake">❄</div><div class="snowflake">❅</div><div class="snowflake">❆</div>
+    </div>
+    
+    <div class="christmas-lights">
+        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+    </div>
+    
+    <div class="music-btn" id="musicBtn" onclick="toggleMusic()">🔇</div>
+    <img class="tree-decor tree-1" src="data:image/jpeg;base64,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" alt="圣诞树">
+    <img class="santa-decor" src="data:image/jpeg;base64,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" alt="圣诞老人">
+
+    <div class="app-container">
+        <div class="header">
+            <h1>🎮 重生之路 ⭐</h1>
+            <div class="subtitle">朱格辉 | <span id="headerLevel">Lv.1</span></div>
+            <div class="christmas-greeting">🎅 圣诞快乐!愿你的重生之路充满希望 🌟</div>
+            <div class="day-display" id="dayDisplay">🎄 Day 1 🎁</div>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-section="status">🎯 状态</button>
+            <button class="nav-tab" data-section="daily">📝 每日</button>
+            <button class="nav-tab" data-section="tasks">⚔️ 任务</button>
+            <button class="nav-tab" data-section="equipment">🎒 装备</button>
+            <button class="nav-tab" data-section="social">👥 社交</button>
+            <button class="nav-tab" data-section="achievements">🏆 成就</button>
+            <button class="nav-tab" data-section="history">📊 记录</button>
+            <button class="nav-tab" data-section="finance">💰 财务</button>
+            <button class="nav-tab" data-section="boss">👹 Boss</button>
+            <button class="nav-tab" data-section="settings">⚙️ 设置</button>
+        </div>
+        
+        <div class="section active" id="status">
+            <div class="card">
+                <div class="card-title">⭐ 等级系统</div>
+                <div class="level-progress">
+                    <div style="text-align:center; font-size:42px; font-weight:bold; color:var(--gold); margin-bottom:10px">
+                        Lv.<span id="currentLevel">1</span>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-header">
+                            <span>经验值</span>
+                            <span id="levelExpValue">0/100</span>
+                        </div>
+                        <div class="stat-bar">
+                            <div class="stat-fill exp" id="levelExpBar" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="level-info-text" id="levelBonus">升级奖励: HP+10, MP+10, 全属性+2</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">🏆 段位系统</div>
+                <div style="text-align:center; padding:20px">
+                    <div class="rank-badge" id="rankBadge">
+                        <img id="rankIcon" src="rank_iron.png" style="width:100%; height:100%; object-fit:contain;">
+                    </div>
+                    <div class="rank-tier-label" id="rankTier">混子黑铁</div>
+                    <div style="font-size:28px; font-weight:bold; margin:8px 0" id="rankName">黑铁III</div>
+                    <div style="font-size:13px; color:var(--text-dim); margin-bottom:20px" id="rankDesc">刚开始，混日子状态</div>
+                    <div class="rank-progress-container">
+                        <div class="rank-progress-bar">
+                            <div class="rank-progress-fill" id="rankProgress" style="width:0%"></div>
+                        </div>
+                        <div style="font-size:12px; color:var(--text-dim); margin-top:8px" id="rankProgressText">
+                            距离下一段位还需 <span id="rankLevelGap">1</span> 级
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card"><div class="card-title">❤️ 生命状态</div>
+                <div class="stat-item"><div class="stat-header"><span>❤️ HP</span><span id="hpValue">60/100</span></div><div class="stat-bar"><div class="stat-fill hp" id="hpBar" style="width:60%"></div></div></div>
+                <div class="stat-item"><div class="stat-header"><span>💙 MP</span><span id="mpValue">20/100</span></div><div class="stat-bar"><div class="stat-fill mp" id="mpBar" style="width:20%"></div></div></div>
+                <div class="stat-item"><div class="stat-header"><span>⭐ EXP</span><span id="expValue">0/1000</span></div><div class="stat-bar"><div class="stat-fill exp" id="expBar" style="width:0%"></div></div></div>
+            </div>
+            <div class="card"><div class="card-title">📊 八维属性</div><div id="attributesList"></div></div>
+            <div class="card"><div class="card-title">⚠️ 状态效果</div><div class="debuff-list" id="debuffList"></div></div>
+            <div class="card"><div class="card-title">🎒 装备栏</div><div id="equipmentList"></div></div>
+        </div>
+        
+        <div class="section" id="daily">
+            <div class="card">
+                <div class="card-title">⭐ 今日活跃度</div>
+                <div style="text-align:center; padding:20px">
+                    <div style="font-size:48px; font-weight:bold; color:var(--gold); margin-bottom:10px">
+                        <span id="activeScore">0</span>/100
+                    </div>
+                    <div style="font-size:14px; color:var(--text-dim); margin-bottom:15px" id="activeLevel">🔴 混子</div>
+                    <div class="rank-progress-bar" style="max-width:100%; margin-bottom:15px">
+                        <div id="activeProgress" style="height:100%; background:linear-gradient(90deg, #ff4444, #ffaa00, #44ff44); transition:width 0.5s; width:0%"></div>
+                    </div>
+                    <div style="font-size:12px; color:var(--text-dim)" id="activeReward">完成任务提升活跃度</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">🏠 生活基础 (35分)</div>
+                <div class="task-check"><div class="checkbox" id="check_washFace" onclick="toggleLifeHabit('washFace')"></div><span>早上洗脸刷牙</span><span style="margin-left:auto;color:var(--gold);font-size:12px">+10分</span></div>
+                <div class="task-check"><div class="checkbox" id="check_breakfast" onclick="toggleLifeHabit('breakfast')"></div><span>吃早餐</span><span style="margin-left:auto;color:var(--gold);font-size:12px">+5分</span></div>
+                <div class="task-check"><div class="checkbox" id="check_lunch" onclick="toggleLifeHabit('lunch')"></div><span>吃午餐</span><span style="margin-left:auto;color:var(--gold);font-size:12px">+5分</span></div>
+                <div class="task-check"><div class="checkbox" id="check_dinner" onclick="toggleLifeHabit('dinner')"></div><span>吃晚餐</span><span style="margin-left:auto;color:var(--gold);font-size:12px">+5分</span></div>
+                <div class="task-check"><div class="checkbox" id="check_shower" onclick="toggleLifeHabit('shower')"></div><span>晚上洗澡</span><span style="margin-left:auto;color:var(--gold);font-size:12px">+10分</span></div>
+            </div>
+            
+            <div class="card"><div class="card-title">📝 今日记录</div>
+                <div class="log-input-group"><label class="log-label">⏰ 起床时间</label><div class="time-input-group"><div style="flex:1"><input type="number" class="time-input" id="wakeHour" placeholder="0" min="0" max="23"><div class="time-label">时</div></div><span class="time-separator">:</span><div style="flex:1"><input type="number" class="time-input" id="wakeMinute" placeholder="0" min="0" max="59"><div class="time-label">分</div></div></div></div>
+                <div class="log-input-group"><label class="log-label">🌙 睡觉时间</label><div class="time-input-group"><div style="flex:1"><input type="number" class="time-input" id="sleepHour" placeholder="0" min="0" max="23"><div class="time-label">时</div></div><span class="time-separator">:</span><div style="flex:1"><input type="number" class="time-input" id="sleepMinute" placeholder="0" min="0" max="59"><div class="time-label">分</div></div></div></div>
+                <div class="log-input-group"><label class="log-label">📚 学习时长</label><div class="rating-selector" id="studyHours"><button class="rating-btn" data-value="0">0</button><button class="rating-btn" data-value="1">1</button><button class="rating-btn" data-value="2">2</button><button class="rating-btn" data-value="3">3</button><button class="rating-btn" data-value="4">4</button><button class="rating-btn" data-value="5">5</button><button class="rating-btn" data-value="6">6+</button></div></div>
+                <div class="log-input-group"><label class="log-label">💫 状态评分</label><div class="rating-selector" id="statusRating"><button class="rating-btn" data-value="1">1</button><button class="rating-btn" data-value="2">2</button><button class="rating-btn" data-value="3">3</button><button class="rating-btn" data-value="4">4</button><button class="rating-btn" data-value="5">5</button><button class="rating-btn" data-value="6">6</button><button class="rating-btn" data-value="7">7</button><button class="rating-btn" data-value="8">8</button><button class="rating-btn" data-value="9">9</button><button class="rating-btn" data-value="10">10</button></div></div>
+                <div class="log-input-group"><label class="log-label">💰 今日收入</label><input type="number" class="log-input" id="dailyIncome" placeholder="0"></div>
+                <div class="log-input-group"><label class="log-label">🎮 娱乐放松 (10分)</label><div class="rating-selector" id="entertainmentTime"><button class="rating-btn" data-value="0">0</button><button class="rating-btn" data-value="30">30分</button><button class="rating-btn" data-value="60">1时</button><button class="rating-btn" data-value="90">1.5时</button><button class="rating-btn" data-value="120">2时+</button></div></div>
+                <div class="log-input-group"><label class="log-label">✏️ 一句话</label><input type="text" class="log-input" id="dailySummary" placeholder="今天..."></div>
+                <button class="save-btn" onclick="saveDailyLog()">🎄 保存记录 +20EXP 🎁</button>
+            </div>
+            <div class="card"><div class="card-title">✅ 每日小任务</div><div id="dailyTasks"></div></div>
+        </div>
+        
+        <div class="section" id="tasks">
+            <div class="card"><div class="card-title">📋 当前章节</div><div id="currentChapter"></div></div>
+            <div class="card"><div class="card-title">🎯 主线任务</div><div id="mainTasks"></div></div>
+            <div class="card"><div class="card-title">📌 支线任务</div><div id="sideTasks"></div></div>
+        </div>
+        
+        <div class="section" id="equipment">
+            <div class="card">
+                <div class="card-title">🎒 装备栏</div>
+                <div class="equipment-grid">
+                    <div class="equipment-slot" onclick="openEquipmentSlot('weapon')">
+                        <div class="slot-icon">⚔️</div>
+                        <div class="slot-name">主武器</div>
+                        <div class="slot-item" id="slot_weapon">顶配电脑</div>
+                        <div class="slot-rarity ssr">SSR</div>
+                    </div>
+                    <div class="equipment-slot" onclick="openEquipmentSlot('armor')">
+                        <div class="slot-icon">🛡️</div>
+                        <div class="slot-name">护甲</div>
+                        <div class="slot-item empty" id="slot_armor">空</div>
+                    </div>
+                    <div class="equipment-slot" onclick="openEquipmentSlot('accessory1')">
+                        <div class="slot-icon">💍</div>
+                        <div class="slot-name">饰品1</div>
+                        <div class="slot-item empty" id="slot_accessory1">空</div>
+                    </div>
+                    <div class="equipment-slot" onclick="openEquipmentSlot('accessory2')">
+                        <div class="slot-icon">📿</div>
+                        <div class="slot-name">饰品2</div>
+                        <div class="slot-item empty" id="slot_accessory2">空</div>
+                    </div>
+                    <div class="equipment-slot" onclick="openEquipmentSlot('tool1')">
+                        <div class="slot-icon">🔧</div>
+                        <div class="slot-name">工具1</div>
+                        <div class="slot-item" id="slot_tool1">AI工具</div>
+                        <div class="slot-rarity ssr">SSR</div>
+                    </div>
+                    <div class="equipment-slot" onclick="openEquipmentSlot('tool2')">
+                        <div class="slot-icon">🔨</div>
+                        <div class="slot-name">工具2</div>
+                        <div class="slot-item empty" id="slot_tool2">空</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📦 装备库存</div>
+                <div id="equipmentInventory"></div>
+                <button class="save-btn" onclick="showAddEquipment()" style="margin-top:15px">➕ 自定义装备</button>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">💪 装备加成</div>
+                <div id="equipmentBonus"></div>
+            </div>
+        </div>
+        
+        <div class="section" id="social">
+            <div class="card"><div class="card-title">👨‍👩‍👦 家人</div><div id="familyList"></div></div>
+            <div class="card"><div class="card-title">💬 社群</div><div id="communityList"></div><button class="save-btn" onclick="addCommunity()" style="margin-top:15px">➕ 添加</button></div>
+            <div class="card"><div class="card-title">🤝 新朋友</div><div id="newFriendsList"></div><button class="save-btn" onclick="addFriend()" style="margin-top:15px">➕ 添加</button></div>
+        </div>
+        
+        <div class="section" id="achievements">
+            <div class="card"><div class="card-title">🏆 成就进度</div><div id="achievementProgress"></div></div>
+            <div class="card"><div class="card-title">📋 全部成就</div><div id="allAchievements"></div></div>
+        </div>
+        
+        <div class="section" id="history">
+            <div class="card"><div class="card-title">📈 统计</div><div class="history-stats"><div class="history-stat"><div class="history-stat-value" id="totalDays">0</div><div>天数</div></div><div class="history-stat"><div class="history-stat-value" id="totalStudy">0</div><div>学习</div></div><div class="history-stat"><div class="history-stat-value" id="totalIncome">0</div><div>收入</div></div></div></div>
+            <div class="card"><div class="card-title">📅 记录</div><div id="historyList"></div></div>
+        </div>
+        
+        <div class="section" id="boss">
+            <div class="quote-box">"你这不是站的挺好的吗!!为什么要回来!!"<div class="quote-author">——首长</div></div>
+            
+            <div class="card">
+                <div class="card-title">👹 Boss图鉴 (20个)</div>
+                <div id="bossLibrary"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">⚔️ 战斗记录</div>
+                <div id="bossLog"></div>
+                <button class="save-btn" onclick="addBossEncounter()">⚔️ 记录战斗</button>
+            </div>
+        </div>
+        
+        <div class="section" id="finance">
+            <div class="card">
+                <div class="card-title">💰 当前余额</div>
+                <div class="money-display">
+                    <div class="money-amount" id="currentMoney">¥0.00</div>
+                    <div class="money-label">总资产</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📝 记录收支</div>
+                <div class="log-input-group">
+                    <label class="log-label">💵 金额</label>
+                    <input type="number" class="log-input" id="transactionAmount" placeholder="0.00" step="0.01">
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">📦 物品名称</label>
+                    <input type="text" class="log-input" id="transactionItem" placeholder="例如：机械键盘、课程、电影票">
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">📋 类型</label>
+                    <div class="rating-selector">
+                        <button class="rating-btn" data-value="income" style="width:auto; padding:10px 20px">收入</button>
+                        <button class="rating-btn" data-value="expense" style="width:auto; padding:10px 20px">支出</button>
+                    </div>
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">🏷️ 类别</label>
+                    <div class="rating-selector" id="categorySelector">
+                        <button class="rating-btn" data-value="food">🍔饮食</button>
+                        <button class="rating-btn" data-value="learning">📚学习</button>
+                        <button class="rating-btn" data-value="entertainment">🎮娱乐</button>
+                        <button class="rating-btn" data-value="clothing">👕服饰</button>
+                        <button class="rating-btn" data-value="electronics">💻电子</button>
+                        <button class="rating-btn" data-value="life">🏠生活</button>
+                        <button class="rating-btn" data-value="health">💊健康</button>
+                        <button class="rating-btn" data-value="other">💰其他</button>
+                    </div>
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">🛒 平台</label>
+                    <div class="rating-selector" id="platformSelector">
+                        <button class="rating-btn" data-value="taobao">淘宝</button>
+                        <button class="rating-btn" data-value="jd">京东</button>
+                        <button class="rating-btn" data-value="pdd">拼多多</button>
+                        <button class="rating-btn" data-value="takeout">外卖</button>
+                        <button class="rating-btn" data-value="offline">线下</button>
+                        <button class="rating-btn" data-value="other">其他</button>
+                    </div>
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">⚠️ 必要性</label>
+                    <div class="rating-selector" id="necessitySelector">
+                        <button class="rating-btn" data-value="must">✅必需品</button>
+                        <button class="rating-btn" data-value="want">⚠️想要的</button>
+                        <button class="rating-btn" data-value="impulse">❌冲动消费</button>
+                    </div>
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">✏️ 备注</label>
+                    <input type="text" class="log-input" id="transactionNote" placeholder="备注信息">
+                </div>
+                <button class="save-btn" onclick="addTransaction()">💰 记录</button>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📊 收支明细</div>
+                <div id="transactionsList"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📈 财务统计</div>
+                <div class="history-stats">
+                    <div class="history-stat">
+                        <div class="history-stat-value" style="color:#2ecc71" id="totalIncomeDisplay">¥0</div>
+                        <div>总收入</div>
+                    </div>
+                    <div class="history-stat">
+                        <div class="history-stat-value" style="color:#e74c3c" id="totalExpenseDisplay">¥0</div>
+                        <div>总支出</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="settings">
+            <div class="card">
+                <div class="card-title">⚙️ 基础设置</div>
+                <div class="log-input-group">
+                    <label class="log-label">💰 初始金钱</label>
+                    <input type="number" class="log-input" id="initialMoney" placeholder="0.00" step="0.01">
+                    <button class="save-btn" onclick="setInitialMoney()" style="margin-top:10px">设置</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">📝 自定义笔记</div>
+                <div class="log-input-group">
+                    <label class="log-label">✏️ 标题</label>
+                    <input type="text" class="log-input" id="noteTitle" placeholder="笔记标题">
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">📄 内容</label>
+                    <textarea class="log-input" id="noteContent" placeholder="记录重要的事情..." rows="5"></textarea>
+                </div>
+                <button class="save-btn" onclick="addNote()">📝 保存笔记</button>
+                <div id="notesList" style="margin-top:20px"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">🎯 自定义目标</div>
+                <div class="log-input-group">
+                    <label class="log-label">🎯 目标内容</label>
+                    <input type="text" class="log-input" id="goalInput" placeholder="例如：每天学习2小时">
+                </div>
+                <button class="save-btn" onclick="addGoal()">➕ 添加目标</button>
+                <div id="goalsList" style="margin-top:20px"></div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">💾 数据管理</div>
+                <button class="save-btn" onclick="exportData()" style="margin-bottom:10px">📤 导出数据</button>
+                <button class="save-btn" onclick="importData()" style="margin-bottom:10px">📥 导入数据</button>
+                <button class="save-btn" onclick="resetData()" style="background:linear-gradient(135deg, #e74c3c, #c0392b)">🔄 重置数据</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="modal"><div class="modal-content"><div class="modal-icon" id="modalIcon">🎉</div><div class="modal-title" id="modalTitle">成功!</div><div class="modal-desc" id="modalDesc"></div><button class="modal-btn" onclick="closeModal()">🎄 好的!</button></div></div>
+    <div class="fab" onclick="quickLog()">📝</div>
+    
+    <!-- 记录详情Modal -->
+    <div id="logDetailModal" class="modal" style="display:none">
+        <div class="modal-content" style="max-width:600px">
+            <div class="modal-header">
+                <h2 id="logDetailTitle">Day 1 详情</h2>
+                <button class="modal-close" onclick="closeLogDetail()">×</button>
+            </div>
+            <div class="modal-body" id="logDetailBody"></div>
+        </div>
+    </div>
+    
+    <!-- 朋友编辑Modal -->
+    <div id="friendEditModal" class="modal" style="display:none">
+        <div class="modal-content" style="max-width:500px">
+            <div class="modal-header">
+                <h2>编辑朋友信息</h2>
+                <button class="modal-close" onclick="closeFriendEdit()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editFriendIndex">
+                <div class="log-input-group">
+                    <label class="log-label">姓名</label>
+                    <input type="text" class="log-input" id="friendName" placeholder="请输入姓名">
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">微信号</label>
+                    <input type="text" class="log-input" id="friendWechat" placeholder="请输入微信号">
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">手机号</label>
+                    <input type="text" class="log-input" id="friendPhone" placeholder="请输入手机号">
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">性格标签</label>
+                    <input type="text" class="log-input" id="friendPersonality" placeholder="如: 热情, 幽默, 靠谱">
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">爱好</label>
+                    <input type="text" class="log-input" id="friendHobbies" placeholder="如: 篮球, 游戏, 摄影">
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">备注</label>
+                    <textarea class="log-input" id="friendNotes" placeholder="备注信息" rows="3"></textarea>
+                </div>
+                <div class="log-input-group">
+                    <label class="log-label">亲密度</label>
+                    <input type="range" id="friendIntimacy" min="0" max="100" value="50" oninput="document.getElementById('intimacyValue').textContent=this.value">
+                    <div style="text-align:center; margin-top:5px"><span id="intimacyValue">50</span>/100</div>
+                </div>
+                <button class="save-btn" onclick="saveFriendEdit()">💾 保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Boss详情Modal -->
+    <div id="bossDetailModal" class="modal" style="display:none">
+        <div class="modal-content" style="max-width:500px">
+            <div class="modal-header">
+                <h2 id="bossDetailTitle">Boss详情</h2>
+                <button class="modal-close" onclick="closeBossDetail()">×</button>
+            </div>
+            <div class="modal-body" id="bossDetailBody"></div>
+        </div>
+    </div>
+    
+    <!-- 装备槽选择Modal -->
+    <div id="equipSlotModal" class="modal" style="display:none">
+        <div class="modal-content" style="max-width:400px">
+            <div class="modal-header">
+                <h2 id="equipSlotTitle">选择装备</h2>
+                <button class="modal-close" onclick="closeEquipSlot()">×</button>
+            </div>
+            <div class="modal-body" id="equipSlotBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let isPlaying=false;const music=document.getElementById('bgMusic'),musicBtn=document.getElementById('musicBtn');
+        function toggleMusic(){if(isPlaying){music.pause();musicBtn.textContent='🔇';musicBtn.classList.remove('playing');}else{music.play().catch(e=>console.log(''));musicBtn.textContent='🎵';musicBtn.classList.add('playing');}isPlaying=!isPlaying;}
+        
+        // ==================== v4.0 常量定义 ====================
+        const RANKS=[
+            // 混子黑铁 (Iron) - Lv.1-3
+            {name:'黑铁III',tier:'混子黑铁',minLevel:1,img:'rank_iron.png',romanNum:'III',color:'#4A4A4A',glow:'rgba(138,43,43,0.5)'},
+            {name:'黑铁II',tier:'混子黑铁',minLevel:2,img:'rank_iron.png',romanNum:'II',color:'#5A4A4A',glow:'rgba(138,43,43,0.6)'},
+            {name:'黑铁I',tier:'混子黑铁',minLevel:3,img:'rank_iron.png',romanNum:'I',color:'#6A4A4A',glow:'rgba(138,43,43,0.7)'},
+            
+            // 努力黄铜 (Bronze) - Lv.4-7
+            {name:'黄铜IV',tier:'努力黄铜',minLevel:4,img:'rank_bronze.png',romanNum:'IV',color:'#CD7F32',glow:'rgba(205,127,50,0.5)'},
+            {name:'黄铜III',tier:'努力黄铜',minLevel:5,img:'rank_bronze.png',romanNum:'III',color:'#D68942',glow:'rgba(205,127,50,0.6)'},
+            {name:'黄铜II',tier:'努力黄铜',minLevel:6,img:'rank_bronze.png',romanNum:'II',color:'#E09952',glow:'rgba(205,127,50,0.7)'},
+            {name:'黄铜I',tier:'努力黄铜',minLevel:7,img:'rank_bronze.png',romanNum:'I',color:'#EAA962',glow:'rgba(205,127,50,0.8)'},
+            
+            // 初立白银 (Silver) - Lv.8-11
+            {name:'白银IV',tier:'初立白银',minLevel:8,img:'rank_silver.png',romanNum:'IV',color:'#C0C0C0',glow:'rgba(192,192,192,0.5)'},
+            {name:'白银III',tier:'初立白银',minLevel:9,img:'rank_silver.png',romanNum:'III',color:'#CACACA',glow:'rgba(192,192,192,0.6)'},
+            {name:'白银II',tier:'初立白银',minLevel:10,img:'rank_silver.png',romanNum:'II',color:'#D4D4D4',glow:'rgba(192,192,192,0.7)'},
+            {name:'白银I',tier:'初立白银',minLevel:11,img:'rank_silver.png',romanNum:'I',color:'#DEDEDE',glow:'rgba(192,192,192,0.8)'},
+            
+            // 立足黄金 (Gold) - Lv.12-15
+            {name:'黄金IV',tier:'立足黄金',minLevel:12,img:'rank_gold.png',romanNum:'IV',color:'#FFD700',glow:'rgba(255,215,0,0.5)'},
+            {name:'黄金III',tier:'立足黄金',minLevel:13,img:'rank_gold.png',romanNum:'III',color:'#FFDD33',glow:'rgba(255,215,0,0.6)'},
+            {name:'黄金II',tier:'立足黄金',minLevel:14,img:'rank_gold.png',romanNum:'II',color:'#FFE566',glow:'rgba(255,215,0,0.7)'},
+            {name:'黄金I',tier:'立足黄金',minLevel:15,img:'rank_gold.png',romanNum:'I',color:'#FFED99',glow:'rgba(255,215,0,0.8)'},
+            
+            // 进步铂金 (Platinum) - Lv.16-19
+            {name:'铂金IV',tier:'进步铂金',minLevel:16,img:'rank_platinum.png',romanNum:'IV',color:'#4ECDC4',glow:'rgba(78,205,196,0.5)'},
+            {name:'铂金III',tier:'进步铂金',minLevel:17,img:'rank_platinum.png',romanNum:'III',color:'#5ED7CE',glow:'rgba(78,205,196,0.6)'},
+            {name:'铂金II',tier:'进步铂金',minLevel:18,img:'rank_platinum.png',romanNum:'II',color:'#6EE1D8',glow:'rgba(78,205,196,0.7)'},
+            {name:'铂金I',tier:'进步铂金',minLevel:19,img:'rank_platinum.png',romanNum:'I',color:'#7EEBE2',glow:'rgba(78,205,196,0.8)'},
+            
+            // 自足钻石 (Diamond) - Lv.20-23
+            {name:'钻石IV',tier:'自足钻石',minLevel:20,img:'rank_diamond.png',romanNum:'IV',color:'#B9F2FF',glow:'rgba(185,242,255,0.5)'},
+            {name:'钻石III',tier:'自足钻石',minLevel:21,img:'rank_diamond.png',romanNum:'III',color:'#C3F4FF',glow:'rgba(185,242,255,0.6)'},
+            {name:'钻石II',tier:'自足钻石',minLevel:22,img:'rank_diamond.png',romanNum:'II',color:'#CDF6FF',glow:'rgba(185,242,255,0.7)'},
+            {name:'钻石I',tier:'自足钻石',minLevel:23,img:'rank_diamond.png',romanNum:'I',color:'#D7F8FF',glow:'rgba(185,242,255,0.8)'},
+            
+            // 起色大师 (Master) - Lv.24-26
+            {name:'大师III',tier:'起色大师',minLevel:24,img:'rank_master.png',romanNum:'III',color:'#E066FF',glow:'rgba(224,102,255,0.6)'},
+            {name:'大师II',tier:'起色大师',minLevel:25,img:'rank_master.png',romanNum:'II',color:'#E680FF',glow:'rgba(224,102,255,0.7)'},
+            {name:'大师I',tier:'起色大师',minLevel:26,img:'rank_master.png',romanNum:'I',color:'#EC99FF',glow:'rgba(224,102,255,0.8)'},
+            
+            // 月万宗师 (Grandmaster) - Lv.27-29
+            {name:'宗师III',tier:'月万宗师',minLevel:27,img:'rank_grandmaster.png',romanNum:'III',color:'#FF4500',glow:'rgba(255,69,0,0.6)'},
+            {name:'宗师II',tier:'月万宗师',minLevel:28,img:'rank_grandmaster.png',romanNum:'II',color:'#FF5520',glow:'rgba(255,69,0,0.7)'},
+            {name:'宗师I',tier:'月万宗师',minLevel:29,img:'rank_grandmaster.png',romanNum:'I',color:'#FF6540',glow:'rgba(255,69,0,0.8)'},
+            
+            // 九转王者 (Challenger) - Lv.30
+            {name:'王者★★★',tier:'九转王者',minLevel:30,img:'rank_challenger.png',romanNum:'',color:'#FFD700',glow:'rgba(255,215,0,1)',special:true}
+        ];
+        
+        // v5.0 宝箱奖励系统
+        const CHEST_REWARDS={
+            normal:{ // 普通宝箱 (60+活跃度)
+                virtual:[
+                    {type:'exp',amount:50,weight:25,desc:'+50经验'},
+                    {type:'money',amount:30,weight:15,desc:'+30金币'}
+                ],
+                entertainment:[
+                    {type:'cinema',value:30,weight:15,desc:'看1部电影(30元)'},
+                    {type:'game',value:0,weight:10,desc:'玩1小时游戏(无负罪感)'},
+                    {type:'food',value:50,weight:10,desc:'吃1顿好吃的(50元)'},
+                    {type:'drink',value:20,weight:10,desc:'买1杯喜欢的饮品(20元)'}
+                ],
+                learning:[
+                    {type:'book',value:50,weight:10,desc:'买1本想看的书(50元)'},
+                    {type:'tool',value:100,weight:5,desc:'买1个学习工具(100元)'}
+                ],
+                equipment:[
+                    {type:'fragment',weight:5,desc:'装备碎片×1'}
+                ]
+            },
+            fine:{ // 精良宝箱 (80+活跃度)
+                virtual:[
+                    {type:'exp',amount:100,weight:20,desc:'+100经验'},
+                    {type:'money',amount:60,weight:10,desc:'+60金币'}
+                ],
+                entertainment:[
+                    {type:'cinema_meal',value:150,weight:15,desc:'周末看电影+吃饭(150元)'},
+                    {type:'game_buy',value:200,weight:10,desc:'买1个想要的游戏(200元)'},
+                    {type:'ktv',value:100,weight:10,desc:'KTV唱歌1次(100元)'},
+                    {type:'script',value:150,weight:10,desc:'剧本杀1次(150元)'},
+                    {type:'escape',value:150,weight:5,desc:'密室逃脱1次(150元)'}
+                ],
+                learning:[
+                    {type:'course',value:300,weight:10,desc:'买课程(300元)'},
+                    {type:'equipment',value:200,weight:5,desc:'买装备(200元)'}
+                ],
+                equipment:[
+                    {type:'SR',weight:5,desc:'SR装备×1'}
+                ]
+            },
+            rare:{ // 稀有宝箱 (95+活跃度)
+                virtual:[
+                    {type:'exp',amount:200,weight:15,desc:'+200经验'},
+                    {type:'money',amount:100,weight:5,desc:'+100金币'}
+                ],
+                entertainment:[
+                    {type:'travel',value:500,weight:20,desc:'周末短途旅行(500元)'},
+                    {type:'park',value:300,weight:10,desc:'游乐场/海洋馆(300元)'},
+                    {type:'restaurant',value:400,weight:10,desc:'高级餐厅1次(400元)'},
+                    {type:'spa',value:300,weight:10,desc:'按摩/SPA放松(300元)'},
+                    {type:'clothes',value:500,weight:10,desc:'买心仪的衣服(500元)'},
+                    {type:'gadget',value:500,weight:10,desc:'电子产品配件(500元)'}
+                ],
+                learning:[
+                    {type:'course_pro',value:600,weight:10,desc:'买高级课程(600元)'},
+                    {type:'equipment_pro',value:600,weight:5,desc:'好装备升级(600元)'}
+                ],
+                equipment:[
+                    {type:'SSR',weight:10,desc:'SSR装备×1'}
+                ]
+            },
+            epic:{ // 史诗宝箱 (连续7天80+)
+                virtual:[
+                    {type:'exp',amount:500,weight:10,desc:'+500经验'}
+                ],
+                entertainment:[
+                    {type:'travel3d',value:1500,weight:30,desc:'3天2夜旅行(1500元)'},
+                    {type:'dream_item',value:1000,weight:20,desc:'买心心念念的东西(1000元)'},
+                    {type:'concert',value:800,weight:15,desc:'演唱会/音乐节门票(800元)'},
+                    {type:'fine_dining',value:600,weight:10,desc:'高端餐厅约会(600元)'},
+                    {type:'theme_park',value:500,weight:5,desc:'主题乐园通票(500元)'}
+                ],
+                learning:[
+                    {type:'pro_equipment',value:1000,weight:5,desc:'专业设备(1000元)'},
+                    {type:'long_course',value:1500,weight:3,desc:'长期课程(1500元)'}
+                ],
+                equipment:[
+                    {type:'legend_fragment',weight:2,desc:'传说装备碎片×3'}
+                ]
+            },
+            legendary:{ // 传说宝箱 (30天王者)
+                entertainment:[
+                    {type:'travel7d',value:5000,weight:40,desc:'7天长途旅行(3000-5000元)'},
+                    {type:'big_dream',value:3000,weight:30,desc:'买梦想中的大件(3000元)'},
+                    {type:'vip',value:2000,weight:20,desc:'VIP体验套餐(2000元)'},
+                    {type:'extreme',value:2000,weight:10,desc:'极限运动体验(跳伞/潜水,2000元)'}
+                ],
+                equipment:[
+                    {type:'legendary',weight:100,desc:'传说装备×1 + 永久称号'}
+                ]
+            }
+        };
+        
+        const BOSS_LIBRARY=[
+            {id:'lazy_dragon',name:'惰性之龙',icon:'🐉',diff:1,desc:'早上再睡5分钟的诱惑',tips:'设定闹钟放远处'},
+            {id:'restart_demon',name:'重开恶魔',icon:'👿',diff:3,desc:'遇到不完美就想重开',tips:'完成比完美重要'},
+            {id:'forget_fog',name:'遗忘之雾',icon:'🌫️',diff:2,desc:'停几天就忘记进度',tips:'每天看昨天的记录'},
+            {id:'compare_giant',name:'比较巨人',icon:'👤',diff:2,desc:'总是和别人比较',tips:'只和昨天的自己比'},
+            {id:'comfort_trap',name:'舒适陷阱',icon:'🛋️',diff:4,desc:'有退路就不努力',tips:'记住首长的话'},
+            {id:'night_demon',name:'夜猫恶魔',icon:'🦇',diff:2,desc:'深夜不睡',tips:'23点前关手机'},
+            {id:'phone_monster',name:'手机怪兽',icon:'📱',diff:3,desc:'无法控制地刷手机',tips:'番茄钟工作法'},
+            {id:'plastic_surgeon',name:'整容医生',icon:'💉',diff:5,desc:'外貌焦虑想整容',tips:'已整5次够了'},
+            {id:'delete_devil',name:'删除魔鬼',icon:'🗑️',diff:3,desc:'想删除记录',tips:'过去是成长'},
+            {id:'comparison_beast',name:'攀比猛兽',icon:'🦁',diff:2,desc:'看到别人也想要',tips:'你的路自己走'},
+            {id:'instant_gratification',name:'即刻满足兽',icon:'🎰',diff:4,desc:'想立刻得到结果',tips:'30天后回头看'},
+            {id:'social_anxiety',name:'社恐巨兽',icon:'😰',diff:3,desc:'不敢社交',tips:'勇敢迈出第一步'},
+            {id:'violence_shadow',name:'暴力阴影',icon:'👊',diff:4,desc:'暴力倾向',tips:'深呼吸冷静5分钟'},
+            {id:'shame_demon',name:'羞耻恶魔',icon:'🙈',diff:5,desc:'退兵的羞耻感',tips:'向前看'},
+            {id:'addiction_beast',name:'成瘾猛兽',icon:'💊',diff:5,desc:'药物和性瘾',tips:'建立健康习惯'},
+            {id:'debt_monster',name:'债务怪兽',icon:'💳',diff:4,desc:'信用破产',tips:'先还债再消费'},
+            {id:'nightclub_shadow',name:'夜场幽灵',icon:'🎭',diff:3,desc:'夜场经历阴影',tips:'重新开始'},
+            {id:'hometown_call',name:'故乡召唤',icon:'🏠',diff:2,desc:'想回武汉依赖',tips:'你能行的'},
+            {id:'imposter_syndrome',name:'冒名顶替怪',icon:'🎭',diff:3,desc:'觉得自己不配',tips:'你值得'},
+            {id:'perfectionism',name:'完美主义龙',icon:'👑',diff:4,desc:'完美导致无法开始',tips:'60分够了'}
+        ];
+        const ACHIEVEMENTS={day1:{name:'新的开始',desc:'记录第一天',reward:50,icon:'🌱'},day7:{name:'初心不改',desc:'连续7天',reward:100,icon:'📝'},day14:{name:'坚持不懈',desc:'连续14天',reward:150,icon:'💪'},day30:{name:'月度冠军',desc:'连续30天',reward:300,icon:'🏆'},day60:{name:'不屈之志',desc:'连续60天',reward:500,icon:'🔥'},day90:{name:'传奇之路',desc:'连续90天',reward:800,icon:'👑'},study10:{name:'学习启蒙',desc:'学习10小时',reward:100,icon:'📚'},study30:{name:'勤奋好学',desc:'学习30小时',reward:200,icon:'✏️'},study50:{name:'学霸之路',desc:'学习50小时',reward:300,icon:'🎓'},study100:{name:'百小时突破',desc:'学习100小时',reward:500,icon:'🌟'},study5day:{name:'单日学霸',desc:'单日学习5小时',reward:150,icon:'⚡'},income1:{name:'首桶金',desc:'第一笔收入',reward:80,icon:'💰'},income500:{name:'小富即安',desc:'累计500元',reward:100,icon:'💵'},income1000:{name:'千元里程碑',desc:'累计1000元',reward:200,icon:'💴'},income3000:{name:'三千进阶',desc:'累计3000元',reward:300,icon:'💷'},income5000:{name:'五千突破',desc:'累计5000元',reward:500,icon:'💶'},income10000:{name:'万元成就',desc:'累计10000元',reward:1000,icon:'👑'},income100day:{name:'单日百元',desc:'单日100元',reward:150,icon:'🎯'},debuff1:{name:'破除第一道枷锁',desc:'清除1个Debuff',reward:100,icon:'🔓'},debuff3:{name:'三重枷锁破除',desc:'清除3个',reward:250,icon:'⛓️'},debuff8:{name:'重获自由',desc:'清除所有',reward:800,icon:'🦅'},boss1:{name:'初次胜利',desc:'战胜1个Boss',reward:100,icon:'⚔️'},boss5:{name:'Boss杀手',desc:'战胜5个',reward:300,icon:'🗡️'},boss10:{name:'Boss终结者',desc:'战胜10个',reward:600,icon:'🏹'},bossAll:{name:'全Boss制霸',desc:'战胜所有',reward:1000,icon:'👑'},friend1:{name:'破冰行动',desc:'结识1个朋友',reward:80,icon:'🤝'},friend3:{name:'社交新星',desc:'结识3个',reward:150,icon:'👥'},friend10:{name:'人脉广阔',desc:'结识10个',reward:400,icon:'🌐'},community1:{name:'社群归属',desc:'加入1个社群',reward:80,icon:'💬'},goal1:{name:'目标设定者',desc:'设定1个目标',reward:50,icon:'🎯'},goalComplete1:{name:'首个完成',desc:'完成1个',reward:100,icon:'✅'},goalComplete3:{name:'执行力初显',desc:'完成3个',reward:200,icon:'💪'},goalComplete10:{name:'目标达人',desc:'完成10个',reward:500,icon:'🏆'},note1:{name:'首篇笔记',desc:'写1篇笔记',reward:60,icon:'📝'},note10:{name:'笔记达人',desc:'写10篇',reward:200,icon:'📖'},attr_all60:{name:'全能战士',desc:'所有属性60+',reward:1000,icon:'🌟'},rank1:{name:'白银战士',desc:'达到白银',reward:200,icon:'🥈'},rank2:{name:'黄金勇者',desc:'达到黄金',reward:400,icon:'🥇'},rank3:{name:'铂金英雄',desc:'达到铂金',reward:600,icon:'💎'},rank4:{name:'钻石大师',desc:'达到钻石',reward:800,icon:'💠'},rank5:{name:'超凡入圣',desc:'达到超凡',reward:1200,icon:'⭐'},rank6:{name:'宗师之路',desc:'达到宗师',reward:1600,icon:'🔥'},rank7:{name:'最强王者',desc:'达到王者',reward:2000,icon:'👑'},chapter1:{name:'生存期完成',desc:'完成第一章',reward:500,icon:'🌱'},chapter2:{name:'恢复期完成',desc:'完成第二章',reward:800,icon:'🌿'},chapter3:{name:'启动期完成',desc:'完成第三章',reward:1200,icon:'🌳'},chapter4:{name:'腾飞期完成',desc:'完成第四章',reward:2000,icon:'🚀'},kingReturn:{name:'王者归来',desc:'Lv.30完成所有主线',reward:5000,icon:'👑'}};
+        const EQUIPMENT_LIB={'顶配电脑':{slot:'weapon',rarity:'SSR',effect:{技能:20,智力:15},icon:'💻'},'AI工具':{slot:'weapon',rarity:'SSR',effect:{智力:15,技能:10},icon:'🤖'},'ChatGPT Plus':{slot:'weapon',rarity:'SSR',effect:{智力:20},icon:'🧠'},'Midjourney':{slot:'tool1',rarity:'SSR',effect:{魅力:15},icon:'🎨'},'机械键盘':{slot:'tool1',rarity:'SR',effect:{技能:10},icon:'⌨️'},'双显示器':{slot:'tool2',rarity:'SR',effect:{智力:5},icon:'🖥️'},'降噪耳机':{slot:'accessory1',rarity:'SR',effect:{精神:10},icon:'🎧'},'人体工学椅':{slot:'armor',rarity:'SR',effect:{体质:10},icon:'🪑'},'笔记本':{slot:'tool1',rarity:'R',effect:{智力:5},icon:'📓'},'台灯':{slot:'accessory2',rarity:'R',effect:{精神:5},icon:'💡'},'水杯':{slot:'accessory1',rarity:'R',effect:{体质:3},icon:'🥤'},'闹钟':{slot:'tool2',rarity:'R',effect:{意志:5},icon:'⏰'},'鼠标':{slot:'tool1',rarity:'N',effect:{技能:3},icon:'🖱️'},'手机':{slot:'tool2',rarity:'N',effect:{社交:5},icon:'📱'}};
+        
+        const defaultData={
+            day:1,
+            hp:60,
+            mp:20,
+            exp:0,
+            level:1,
+            levelExp:0,
+            money:0,
+            transactions:[],
+            notes:[],
+            goals:[],
+            totalExpense:0,
+            rank:0,
+            rankPoints:0,
+            buffs:{},
+            equipment:{
+                weapon:{name:'顶配电脑',rarity:'SSR'},
+                armor:null,
+                accessory1:null,
+                accessory2:null,
+                tool1:{name:'AI工具',rarity:'SSR'},
+                tool2:null
+            },
+            equipmentInventory:[],
+            achievementsUnlocked:[],
+            bossDefeated:{},
+            friendsDetailed:[],
+            attributes:{
+                体质:25,
+                精神:20,
+                魅力:40,
+                智力:55,
+                意志:15,
+                社交:30,
+                财富:10,
+                技能:15
+            },
+            debuffs:{
+                '作息紊乱':true,
+                '药物适应期':true,
+                '动力枯竭':true,
+                '重开成瘾':true,
+                '删除强迫':true,
+                '信用破产':true,
+                '外貌焦虑':true,
+                '寄生状态':true
+            },
+            dailyLogs:[],
+            achievements:{},
+            communities:[],
+            friends:[],
+            family:[
+                {name:'父亲',type:'家人',intimacy:80,notes:'南车集团，很爱我'},
+                {name:'母亲',type:'家人',intimacy:60,notes:'在家照顾我长大'}
+            ],
+            bossEncounters:[],
+            totalStudyHours:0,
+            totalIncome:0,
+            consecutiveDays:0,
+            lastLoginDate:'',
+            dailyActiveScore:0,
+            lifeHabits:{
+                washFace:false,
+                breakfast:false,
+                lunch:false,
+                dinner:false,
+                shower:false
+            },
+            entertainmentLog:[],
+            shoppingCart:[],
+            chestInventory:[],
+            loginRewards:{},
+            tasks:{
+                daily:{},
+                main:[
+                    // Lv.1 主线
+                    {id:'start_journey',name:'开始旅程：记录第一天',level:1,progress:0,target:1,completed:false,reward:{exp:50,money:0},unlocked:true},
+                    // Lv.2 主线
+                    {id:'consecutive3',name:'坚持3天：建立习惯',level:2,progress:0,target:3,completed:false,reward:{exp:80,money:0},unlocked:false},
+                    // Lv.3 主线
+                    {id:'first_debuff',name:'清除第一个Debuff',level:3,progress:0,target:1,completed:false,reward:{exp:100,money:0},unlocked:false},
+                    // Lv.4 主线
+                    {id:'study10h',name:'累计学习10小时',level:4,progress:0,target:10,completed:false,reward:{exp:120,money:0},unlocked:false},
+                    // Lv.5 主线
+                    {id:'consecutive7',name:'七日坚持：连续记录7天',level:5,progress:0,target:7,completed:false,reward:{exp:200,money:50},unlocked:false},
+                    // Lv.6 主线
+                    {id:'first_note',name:'写下第一篇反思笔记',level:6,progress:0,target:1,completed:false,reward:{exp:100,money:0},unlocked:false},
+                    // Lv.7 主线
+                    {id:'defeat_lazy',name:'战胜惰性之龙3次',level:7,progress:0,target:3,completed:false,reward:{exp:150,money:0},unlocked:false},
+                    // Lv.8 主线
+                    {id:'clear3debuffs',name:'清除3个Debuff：摆脱负面状态',level:8,progress:0,target:3,completed:false,reward:{exp:250,money:100},unlocked:false},
+                    // Lv.9 主线
+                    {id:'study30h',name:'累计学习30小时',level:9,progress:0,target:30,completed:false,reward:{exp:300,money:0},unlocked:false},
+                    // Lv.10 主线
+                    {id:'chapter1_complete',name:'完成第一章：生存期',level:10,progress:0,target:30,completed:false,reward:{exp:500,money:200},unlocked:false},
+                    // Lv.11 主线
+                    {id:'income500',name:'累计收入500元',level:11,progress:0,target:500,completed:false,reward:{exp:200,money:100},unlocked:false},
+                    // Lv.12 主线
+                    {id:'set5goals',name:'设定5个人生目标',level:12,progress:0,target:5,completed:false,reward:{exp:150,money:0},unlocked:false},
+                    // Lv.13 主线
+                    {id:'defeat_restart',name:'战胜重开恶魔5次',level:13,progress:0,target:5,completed:false,reward:{exp:300,money:0},unlocked:false},
+                    // Lv.14 主线
+                    {id:'clear5debuffs',name:'清除5个Debuff',level:14,progress:0,target:5,completed:false,reward:{exp:400,money:150},unlocked:false},
+                    // Lv.15 主线
+                    {id:'study60h',name:'累计学习60小时',level:15,progress:0,target:60,completed:false,reward:{exp:500,money:200},unlocked:false},
+                    // Lv.16 主线
+                    {id:'income1000',name:'累计收入1000元',level:16,progress:0,target:1000,completed:false,reward:{exp:400,money:200},unlocked:false},
+                    // Lv.17 主线
+                    {id:'consecutive30',name:'连续记录30天',level:17,progress:0,target:30,completed:false,reward:{exp:600,money:300},unlocked:false},
+                    // Lv.18 主线
+                    {id:'complete5goals',name:'完成5个目标',level:18,progress:0,target:5,completed:false,reward:{exp:500,money:200},unlocked:false},
+                    // Lv.19 主线
+                    {id:'clear_all_debuffs',name:'清除所有Debuff',level:19,progress:0,target:8,completed:false,reward:{exp:800,money:500},unlocked:false},
+                    // Lv.20 主线
+                    {id:'chapter2_complete',name:'完成第二章：恢复期',level:20,progress:0,target:60,completed:false,reward:{exp:1000,money:500},unlocked:false},
+                    // Lv.21 主线
+                    {id:'income3000',name:'累计收入3000元',level:21,progress:0,target:3000,completed:false,reward:{exp:600,money:300},unlocked:false},
+                    // Lv.22 主线
+                    {id:'study100h',name:'累计学习100小时',level:22,progress:0,target:100,completed:false,reward:{exp:700,money:0},unlocked:false},
+                    // Lv.23 主线
+                    {id:'make_friend',name:'结识3个新朋友',level:23,progress:0,target:3,completed:false,reward:{exp:500,money:0},unlocked:false},
+                    // Lv.24 主线
+                    {id:'join_community',name:'加入2个社群',level:24,progress:0,target:2,completed:false,reward:{exp:400,money:0},unlocked:false},
+                    // Lv.25 主线
+                    {id:'defeat_all_bosses',name:'战胜所有Boss各1次',level:25,progress:0,target:5,completed:false,reward:{exp:1000,money:500},unlocked:false},
+                    // Lv.26 主线
+                    {id:'income5000',name:'累计收入5000元',level:26,progress:0,target:5000,completed:false,reward:{exp:800,money:500},unlocked:false},
+                    // Lv.27 主线
+                    {id:'consecutive60',name:'连续记录60天',level:27,progress:0,target:60,completed:false,reward:{exp:1000,money:1000},unlocked:false},
+                    // Lv.28 主线
+                    {id:'write10notes',name:'写下10篇笔记',level:28,progress:0,target:10,completed:false,reward:{exp:800,money:0},unlocked:false},
+                    // Lv.29 主线
+                    {id:'study150h',name:'累计学习150小时',level:29,progress:0,target:150,completed:false,reward:{exp:1000,money:500},unlocked:false},
+                    // Lv.30 主线（终极目标）
+                    {id:'rebirth_complete',name:'重生完成：月入过万',level:30,progress:0,target:10000,completed:false,reward:{exp:2000,money:2000},unlocked:false}
+                ],
+                side:[
+                    // 基础支线
+                    {id:'first_wake',name:'记录第一次起床时间',type:'基础',completed:false,reward:{exp:30}},
+                    {id:'first_study',name:'记录第一次学习',type:'基础',completed:false,reward:{exp:30}},
+                    {id:'first_income',name:'记录第一笔收入',type:'基础',completed:false,reward:{exp:50}},
+                    {id:'writeNote',name:'写第一篇笔记',type:'基础',completed:false,reward:{exp:50}},
+                    {id:'setGoal',name:'设定第一个目标',type:'基础',completed:false,reward:{exp:30}},
+                    {id:'addFriend',name:'记录第一个新朋友',type:'社交',completed:false,reward:{exp:50}},
+                    {id:'defeatBoss',name:'战胜第一个Boss',type:'战斗',completed:false,reward:{exp:100}},
+                    {id:'join_first_community',name:'加入第一个社群',type:'社交',completed:false,reward:{exp:50}},
+                    
+                    // 习惯养成系列
+                    {id:'early_bird',name:'连续3天早起（7点前）',type:'习惯',completed:false,reward:{exp:100}},
+                    {id:'no_stay_up',name:'连续7天不熬夜（23点前睡）',type:'习惯',completed:false,reward:{exp:150}},
+                    {id:'daily_study',name:'连续5天学习超过2小时',type:'习惯',completed:false,reward:{exp:120}},
+                    {id:'keep_diary',name:'连续10天写日记总结',type:'习惯',completed:false,reward:{exp:200}},
+                    
+                    // Debuff清除系列
+                    {id:'fix_sleep',name:'清除"作息紊乱"Debuff',type:'成长',completed:false,reward:{exp:100}},
+                    {id:'stop_restart',name:'清除"重开成瘾"Debuff',type:'成长',completed:false,reward:{exp:150}},
+                    {id:'stop_delete',name:'清除"删除强迫"Debuff',type:'成长',completed:false,reward:{exp:150}},
+                    {id:'build_confidence',name:'清除"外貌焦虑"Debuff',type:'成长',completed:false,reward:{exp:200}},
+                    {id:'be_independent',name:'清除"寄生状态"Debuff',type:'成长',completed:false,reward:{exp:250}},
+                    
+                    // 学习成长系列
+                    {id:'study_5h',name:'单天学习5小时',type:'学习',completed:false,reward:{exp:80}},
+                    {id:'study_milestone_20',name:'学习里程碑：20小时',type:'学习',completed:false,reward:{exp:100}},
+                    {id:'study_milestone_50',name:'学习里程碑：50小时',type:'学习',completed:false,reward:{exp:200}},
+                    {id:'study_milestone_100',name:'学习里程碑：100小时',type:'学习',completed:false,reward:{exp:300}},
+                    {id:'master_ai_basic',name:'掌握AI基础（学习30小时）',type:'学习',completed:false,reward:{exp:200}},
+                    
+                    // 财富积累系列
+                    {id:'save_100',name:'存款达到100元',type:'财富',completed:false,reward:{exp:50}},
+                    {id:'save_500',name:'存款达到500元',type:'财富',completed:false,reward:{exp:100}},
+                    {id:'save_1000',name:'存款达到1000元',type:'财富',completed:false,reward:{exp:200}},
+                    {id:'earn_100_day',name:'单日收入100元',type:'财富',completed:false,reward:{exp:150}},
+                    {id:'earn_500_day',name:'单日收入500元',type:'财富',completed:false,reward:{exp:300}},
+                    
+                    // 社交重建系列
+                    {id:'talk_to_dad',name:'和父亲深谈一次',type:'社交',completed:false,reward:{exp:100}},
+                    {id:'talk_to_mom',name:'和母亲深谈一次',type:'社交',completed:false,reward:{exp:100}},
+                    {id:'make_3friends',name:'结识3个新朋友',type:'社交',completed:false,reward:{exp:150}},
+                    {id:'join_3communities',name:'加入3个社群',type:'社交',completed:false,reward:{exp:150}},
+                    {id:'help_someone',name:'帮助他人一次',type:'社交',completed:false,reward:{exp:120}},
+                    
+                    // Boss战斗系列
+                    {id:'defeat_lazy_5',name:'战胜惰性之龙5次',type:'战斗',completed:false,reward:{exp:150}},
+                    {id:'defeat_restart_5',name:'战胜重开恶魔5次',type:'战斗',completed:false,reward:{exp:200}},
+                    {id:'defeat_forget_5',name:'战胜遗忘之雾5次',type:'战斗',completed:false,reward:{exp:150}},
+                    {id:'defeat_compare_5',name:'战胜比较巨人5次',type:'战斗',completed:false,reward:{exp:150}},
+                    {id:'defeat_comfort_5',name:'战胜舒适陷阱5次',type:'战斗',completed:false,reward:{exp:200}},
+                    
+                    // 目标达成系列
+                    {id:'complete_first_goal',name:'完成第一个目标',type:'成就',completed:false,reward:{exp:80}},
+                    {id:'complete_3goals',name:'完成3个目标',type:'成就',completed:false,reward:{exp:150}},
+                    {id:'complete_5goals',name:'完成5个目标',type:'成就',completed:false,reward:{exp:250}},
+                    {id:'complete_10goals',name:'完成10个目标',type:'成就',completed:false,reward:{exp:500}},
+                    
+                    // 记录系列
+                    {id:'write_5notes',name:'写5篇笔记',type:'记录',completed:false,reward:{exp:100}},
+                    {id:'write_10notes',name:'写10篇笔记',type:'记录',completed:false,reward:{exp:200}},
+                    {id:'record_30days',name:'记录30天',type:'记录',completed:false,reward:{exp:300}},
+                    {id:'record_60days',name:'记录60天',type:'记录',completed:false,reward:{exp:500}},
+                    {id:'record_90days',name:'记录90天',type:'记录',completed:false,reward:{exp:800}},
+                    
+                    // 特殊挑战
+                    {id:'no_restart_7days',name:'7天内不想重开',type:'挑战',completed:false,reward:{exp:200}},
+                    {id:'no_delete_30days',name:'30天内不删除任何东西',type:'挑战',completed:false,reward:{exp:300}},
+                    {id:'perfect_week',name:'完美一周：每天学习3小时',type:'挑战',completed:false,reward:{exp:250}},
+                    {id:'comeback',name:'回到武汉父母家',type:'重要',completed:false,reward:{exp:500}}
+                ]
+            },
+            chapter:1,
+            // v4.0新增字段
+            rank:0, // 段位：0=青铜,1=白银,2=黄金,3=铂金,4=钻石,5=超凡,6=宗师,7=王者
+            rankPoints:0, // 段位积分
+            buffs:{}, // 当前BUFF {buffName:{endDay:X, effect:{}}}
+            equipment:{ // 装备栏
+                weapon:{name:'顶配电脑',rarity:'SSR',effect:{技能:20,智力:15}},
+                armor:null,
+                accessory1:null,
+                accessory2:null,
+                tool1:{name:'AI工具',rarity:'SSR',effect:{智力:15,技能:10}},
+                tool2:null
+            },
+            equipmentInventory:['机械键盘','降噪耳机','笔记本','台灯','水杯','闹钟'], // 装备库存
+            achievementsUnlocked:[], // 已解锁成就ID列表
+            bossDefeated:{}, // Boss击败次数 {bossId:count}
+            friendsDetailed:[] // 详细朋友信息 [{name,wechat,phone,personality,hobbies,notes,intimacy}]
+        };
+        let gameData=JSON.parse(localStorage.getItem('zhugehui_xmas2')||'null')||{...defaultData};
+        function saveData(){localStorage.setItem('zhugehui_xmas2',JSON.stringify(gameData));}
+        
+        // v5.0 生活习惯切换
+        function toggleLifeHabit(habit){
+            if(!gameData.lifeHabits)gameData.lifeHabits={};
+            gameData.lifeHabits[habit]=!gameData.lifeHabits[habit];
+            document.getElementById('check_'+habit).classList.toggle('checked',gameData.lifeHabits[habit]);
+            updateActiveScore();
+            saveData();
+        }
+        
+        // v5.0 计算活跃度
+        function calculateActiveScore(){
+            let score=0;
+            // 生活基础 35分
+            if(gameData.lifeHabits){
+                if(gameData.lifeHabits.washFace)score+=10;
+                if(gameData.lifeHabits.breakfast)score+=5;
+                if(gameData.lifeHabits.lunch)score+=5;
+                if(gameData.lifeHabits.dinner)score+=5;
+                if(gameData.lifeHabits.shower)score+=10;
+            }
+            // 学习工作 30分
+            const wH=document.getElementById('wakeHour').value;
+            const wM=document.getElementById('wakeMinute').value;
+            if(wH)score+=5; // 记录起床时间
+            const study=parseInt(document.querySelector('#studyHours .selected')?.dataset.value||0);
+            if(study>=1)score+=15; // 学习1小时
+            if(study>=2)score+=10; // 额外10分
+            // 娱乐放松 10分
+            const entertainment=parseInt(document.querySelector('#entertainmentTime .selected')?.dataset.value||0);
+            if(entertainment>=30)score+=10;
+            // 状态评分 5分
+            const rating=parseInt(document.querySelector('#statusRating .selected')?.dataset.value||0);
+            if(rating>=5)score+=5;
+            
+            return Math.min(100,score);
+        }
+        
+        // v5.0 更新活跃度显示
+        function updateActiveScore(){
+            const score=calculateActiveScore();
+            gameData.dailyActiveScore=score;
+            document.getElementById('activeScore').textContent=score;
+            document.getElementById('activeProgress').style.width=score+'%';
+            
+            let level='🔴 混子',reward='完成任务提升活跃度';
+            if(score>=95){level='🟣 完美';reward='奖励: +50 EXP + 稀有宝箱';}
+            else if(score>=80){level='🔵 优秀';reward='奖励: +30 EXP + 精良宝箱';}
+            else if(score>=60){level='🟢 良好';reward='奖励: +20 EXP + 普通宝箱';}
+            else if(score>=40){level='🟡 及格';reward='奖励: +10 EXP';}
+            else if(score>=20){level='🟠 摸鱼';reward='奖励: +5 EXP';}
+            
+            document.getElementById('activeLevel').textContent=level;
+            document.getElementById('activeReward').textContent=reward;
+        }
+        
+        // v5.0 开启宝箱
+        function openChest(type){
+            const chest=CHEST_REWARDS[type];
+            if(!chest)return alert('宝箱类型错误！');
+            
+            // 收集所有奖励
+            let allRewards=[];
+            ['virtual','entertainment','learning','equipment'].forEach(category=>{
+                if(chest[category]){
+                    chest[category].forEach(reward=>{
+                        for(let i=0;i<reward.weight;i++){
+                            allRewards.push({...reward,category});
+                        }
+                    });
+                }
+            });
+            
+            // 随机抽取
+            const selectedReward=allRewards[Math.floor(Math.random()*allRewards.length)];
+            
+            // 发放奖励
+            let msg='';
+            if(selectedReward.type==='exp'){
+                gameData.levelExp+=selectedReward.amount;
+                msg=`获得 ${selectedReward.desc}`;
+            }else if(selectedReward.type==='money'){
+                gameData.money+=selectedReward.amount;
+                msg=`获得 ${selectedReward.desc}`;
+            }else{
+                msg=`获得奖励：${selectedReward.desc}\n\n记得兑现！这是你努力的奖励！`;
+            }
+            
+            checkLevelUp();
+            saveData();
+            render();
+            
+            const chestNames={normal:'🎁 普通宝箱',fine:'🎁 精良宝箱',rare:'🎁 稀有宝箱',epic:'🎁 史诗宝箱',legendary:'🎁 传说宝箱'};
+            showModal(chestNames[type]||'🎁 宝箱',msg,'太棒了！');
+        }
+        
+        // v5.0 发放宝箱（根据活跃度）
+        function grantChest(score){
+            if(!gameData.chestInventory)gameData.chestInventory=[];
+            if(score>=95){
+                gameData.chestInventory.push({type:'rare',date:new Date().toLocaleDateString()});
+            }else if(score>=80){
+                gameData.chestInventory.push({type:'fine',date:new Date().toLocaleDateString()});
+            }else if(score>=60){
+                gameData.chestInventory.push({type:'normal',date:new Date().toLocaleDateString()});
+            }
+        }
+        
+        // v5.0 连续登录检测
+        function checkLoginReward(){
+            const today=new Date().toLocaleDateString('zh-CN');
+            if(gameData.lastLoginDate===today)return; // 今天已经登录过
+            
+            const yesterday=new Date(Date.now()-86400000).toLocaleDateString('zh-CN');
+            if(gameData.lastLoginDate===yesterday){
+                // 连续登录
+                gameData.consecutiveDays=(gameData.consecutiveDays||0)+1;
+            }else if(!gameData.lastLoginDate){
+                // 第一次登录
+                gameData.consecutiveDays=1;
+            }else{
+                // 中断了
+                gameData.consecutiveDays=1;
+            }
+            
+            gameData.lastLoginDate=today;
+            
+            const days=gameData.consecutiveDays;
+            let reward='';
+            let exp=0;
+            
+            if(days===1){exp=20;reward='+20 EXP';}
+            else if(days===2){exp=25;reward='+25 EXP';}
+            else if(days===3){exp=30;reward='+30 EXP + 🎁普通宝箱';grantChest(60);}
+            else if(days===4){exp=35;reward='+35 EXP';}
+            else if(days===5){exp=40;reward='+40 EXP';}
+            else if(days===6){exp=45;reward='+45 EXP';}
+            else if(days===7){exp=100;reward='+100 EXP + 🎁精良宝箱 + 称号"坚持者"';grantChest(80);}
+            else if(days===14){exp=200;reward='+200 EXP + 🎁稀有宝箱 + 称号"不屈者"';grantChest(95);}
+            else if(days===30){exp=500;reward='+500 EXP + 🎁史诗宝箱 + 称号"月度王者"';
+                if(!gameData.chestInventory)gameData.chestInventory=[];
+                gameData.chestInventory.push({type:'epic',date:today});
+            }
+            else if(days===60){exp=800;reward='+800 EXP + 🎁传说宝箱 + SSR装备';
+                if(!gameData.chestInventory)gameData.chestInventory=[];
+                gameData.chestInventory.push({type:'legendary',date:today});
+            }
+            else if(days===90){exp=1500;reward='+1500 EXP + 🎁神话宝箱 + 传说装备 + 称号"传奇"';
+                if(!gameData.chestInventory)gameData.chestInventory=[];
+                gameData.chestInventory.push({type:'legendary',date:today});
+            }
+            else if(days>=8){exp=50+Math.floor((days-7)/7)*10;reward=`+${exp} EXP`;}
+            
+            if(exp>0){
+                gameData.levelExp=(gameData.levelExp||0)+exp;
+                checkLevelUp();
+                saveData();
+                showModal('🎉','连续登录第'+days+'天',reward);
+            }
+        }
+        
+        
+        // ==================== v4.0 新功能函数 ====================
+        
+        // 段位系统
+        function updateRank(silent=false){
+            const level=gameData.level||1;
+            for(let i=RANKS.length-1;i>=0;i--){
+                if(level>=RANKS[i].minLevel){
+                    if(gameData.rank!==i&&!silent){
+                        gameData.rank=i;
+                        showModal('🎉','段位晋升!',`恭喜晋升到 ${RANKS[i].icon} ${RANKS[i].name}!<br>继续加油，向更高段位进发！`);
+                        checkAchievement('rank'+i);
+                    }else if(gameData.rank!==i){
+                        gameData.rank=i;
+                    }
+                    break;
+                }
+            }
+        }
+        
+        // 成就检测
+        function checkAchievement(id){
+            if(!gameData.achievementsUnlocked)gameData.achievementsUnlocked=[];
+            if(gameData.achievementsUnlocked.includes(id))return;
+            if(ACHIEVEMENTS[id]){
+                gameData.achievementsUnlocked.push(id);
+                const ach=ACHIEVEMENTS[id];
+                gameData.exp+=ach.reward;
+                gameData.levelExp=(gameData.levelExp||0)+ach.reward;
+                showModal('🏆','成就解锁!',`${ach.icon} ${ach.name}<br>${ach.desc}<br><span style="color:var(--gold)">+${ach.reward} EXP</span>`);
+                checkLevelUp();
+                saveData();
+            }
+        }
+        
+        // 批量检测成就
+        function checkAllAchievements(){
+            if(!gameData.achievementsUnlocked)gameData.achievementsUnlocked=[];
+            // 时间成就
+            if(gameData.consecutiveDays>=1)checkAchievement('day1');
+            if(gameData.consecutiveDays>=7)checkAchievement('day7');
+            if(gameData.consecutiveDays>=14)checkAchievement('day14');
+            if(gameData.consecutiveDays>=30)checkAchievement('day30');
+            if(gameData.consecutiveDays>=60)checkAchievement('day60');
+            if(gameData.consecutiveDays>=90)checkAchievement('day90');
+            // 学习成就
+            if(gameData.totalStudyHours>=10)checkAchievement('study10');
+            if(gameData.totalStudyHours>=30)checkAchievement('study30');
+            if(gameData.totalStudyHours>=50)checkAchievement('study50');
+            if(gameData.totalStudyHours>=100)checkAchievement('study100');
+            // 财富成就
+            if(gameData.totalIncome>0)checkAchievement('income1');
+            if(gameData.totalIncome>=500)checkAchievement('income500');
+            if(gameData.totalIncome>=1000)checkAchievement('income1000');
+            if(gameData.totalIncome>=3000)checkAchievement('income3000');
+            if(gameData.totalIncome>=5000)checkAchievement('income5000');
+            if(gameData.totalIncome>=10000)checkAchievement('income10000');
+            // Debuff成就
+            const clearedCount=Object.values(gameData.debuffs).filter(v=>!v).length;
+            if(clearedCount>=1)checkAchievement('debuff1');
+            if(clearedCount>=3)checkAchievement('debuff3');
+            if(clearedCount>=8)checkAchievement('debuff8');
+            // Boss成就
+            const bossCount=gameData.bossDefeated?Object.keys(gameData.bossDefeated).length:0;
+            if(bossCount>=1)checkAchievement('boss1');
+            if(bossCount>=5)checkAchievement('boss5');
+            if(bossCount>=10)checkAchievement('boss10');
+            if(bossCount>=20)checkAchievement('bossAll');
+            // 社交成就
+            if(gameData.friendsDetailed&&gameData.friendsDetailed.length>=1)checkAchievement('friend1');
+            if(gameData.friendsDetailed&&gameData.friendsDetailed.length>=3)checkAchievement('friend3');
+            if(gameData.friendsDetailed&&gameData.friendsDetailed.length>=10)checkAchievement('friend10');
+            if(gameData.communities&&gameData.communities.length>=1)checkAchievement('community1');
+            // 目标成就
+            if(gameData.goals&&gameData.goals.length>=1)checkAchievement('goal1');
+            const completedGoals=gameData.goals?gameData.goals.filter(g=>g.completed).length:0;
+            if(completedGoals>=1)checkAchievement('goalComplete1');
+            if(completedGoals>=3)checkAchievement('goalComplete3');
+            if(completedGoals>=10)checkAchievement('goalComplete10');
+            // 笔记成就
+            if(gameData.notes&&gameData.notes.length>=1)checkAchievement('note1');
+            if(gameData.notes&&gameData.notes.length>=10)checkAchievement('note10');
+            // 属性成就
+            const allAbove60=Object.values(gameData.attributes).every(v=>v>=60);
+            if(allAbove60)checkAchievement('attr_all60');
+            // 终极成就
+            if(gameData.level>=30){
+                const allMainComplete=gameData.tasks.main.every(t=>t.completed);
+                if(allMainComplete)checkAchievement('kingReturn');
+            }
+        }
+        
+        // 装备管理
+        function openEquipmentSlot(slot){
+            if(!gameData.equipment)gameData.equipment={};
+            currentEquipSlot=slot;
+            const slotNames={weapon:'主武器',armor:'护甲',accessory1:'饰品1',accessory2:'饰品2',tool1:'工具1',tool2:'工具2'};
+            document.getElementById('equipSlotTitle').textContent='装备'+slotNames[slot];
+            let html='<div style="margin-bottom:15px"><button class="save-btn" onclick="unequipSlot()">卸下装备</button></div>';
+            const validItems=Object.keys(EQUIPMENT_LIB).filter(name=>{
+                const item=EQUIPMENT_LIB[name];
+                return item.slot===slot||(slot==='tool1'||slot==='tool2'||slot==='accessory1'||slot==='accessory2');
+            });
+            validItems.forEach(name=>{
+                const item=EQUIPMENT_LIB[name];
+                const effectStr=Object.entries(item.effect).map(([k,v])=>`${k}+${v}`).join(', ');
+                html+=`<div class="equipment-inventory-item" onclick="equipItem('${name}')">
+                    <div><div style="font-weight:bold">${item.icon} ${name}</div><div style="font-size:12px;color:var(--text-dim)">${effectStr}</div></div>
+                    <div class="slot-rarity ${item.rarity.toLowerCase()}">${item.rarity}</div>
+                </div>`;
+            });
+            document.getElementById('equipSlotBody').innerHTML=html;
+            document.getElementById('equipSlotModal').style.display='flex';
+        }
+        let currentEquipSlot='';
+        function equipItem(name){
+            if(!gameData.equipment)gameData.equipment={};
+            gameData.equipment[currentEquipSlot]={name,rarity:EQUIPMENT_LIB[name].rarity};
+            saveData();
+            render();
+            closeEquipSlot();
+        }
+        function unequipSlot(){
+            if(gameData.equipment)gameData.equipment[currentEquipSlot]=null;
+            saveData();
+            render();
+            closeEquipSlot();
+        }
+        function closeEquipSlot(){document.getElementById('equipSlotModal').style.display='none';}
+        function showAddEquipment(){
+            alert('自定义装备功能即将上线！\n\n目前可以从14件预设装备中选择：\n\n💻 顶配电脑、🤖 AI工具、🧠 ChatGPT Plus、🎨 Midjourney\n⌨️ 机械键盘、🖥️ 双显示器、🎧 降噪耳机、🪑 人体工学椅\n📓 笔记本、💡 台灯、🥤 水杯、⏰ 闹钟、🖱️ 鼠标、📱 手机');
+        }
+        
+        // 朋友详细信息
+        function editFriend(index){
+            if(!gameData.friendsDetailed)gameData.friendsDetailed=[];
+            const friend=gameData.friendsDetailed[index]||{name:'',wechat:'',phone:'',personality:'',hobbies:'',notes:'',intimacy:50};
+            document.getElementById('editFriendIndex').value=index;
+            document.getElementById('friendName').value=friend.name||'';
+            document.getElementById('friendWechat').value=friend.wechat||'';
+            document.getElementById('friendPhone').value=friend.phone||'';
+            document.getElementById('friendPersonality').value=friend.personality||'';
+            document.getElementById('friendHobbies').value=friend.hobbies||'';
+            document.getElementById('friendNotes').value=friend.notes||'';
+            document.getElementById('friendIntimacy').value=friend.intimacy||50;
+            document.getElementById('intimacyValue').textContent=friend.intimacy||50;
+            document.getElementById('friendEditModal').style.display='flex';
+        }
+        function saveFriendEdit(){
+            if(!gameData.friendsDetailed)gameData.friendsDetailed=[];
+            const index=parseInt(document.getElementById('editFriendIndex').value);
+            const friend={
+                name:document.getElementById('friendName').value,
+                wechat:document.getElementById('friendWechat').value,
+                phone:document.getElementById('friendPhone').value,
+                personality:document.getElementById('friendPersonality').value,
+                hobbies:document.getElementById('friendHobbies').value,
+                notes:document.getElementById('friendNotes').value,
+                intimacy:parseInt(document.getElementById('friendIntimacy').value)
+            };
+            if(index>=0&&index<gameData.friendsDetailed.length){
+                gameData.friendsDetailed[index]=friend;
+            }else{
+                gameData.friendsDetailed.push(friend);
+            }
+            saveData();
+            render();
+            closeFriendEdit();
+        }
+        function closeFriendEdit(){document.getElementById('friendEditModal').style.display='none';}
+        
+        // 记录详情
+        function showLogDetail(index){
+            const log=gameData.dailyLogs[index];
+            if(!log)return;
+            document.getElementById('logDetailTitle').textContent=`Day ${log.day} - ${log.date}`;
+            let html=`
+                <div style="margin-bottom:20px">
+                    <div style="font-size:16px;font-weight:bold;margin-bottom:10px">📊 基础信息</div>
+                    <div style="font-size:14px;line-height:1.8">
+                        ⏰ 起床: ${log.wakeTime||'未记录'}<br>
+                        📚 学习: ${log.studyHours}小时<br>
+                        💯 状态: ${log.rating}/10<br>
+                        💰 收入: ¥${log.income||0}
+                    </div>
+                </div>
+                <div style="margin-bottom:20px">
+                    <div style="font-size:16px;font-weight:bold;margin-bottom:10px">📝 总结</div>
+                    <div style="background:rgba(255,255,255,0.05);padding:15px;border-radius:8px;font-size:14px">
+                        ${log.summary||'无总结'}
+                    </div>
+                </div>
+                <div style="margin-bottom:20px">
+                    <div style="font-size:16px;font-weight:bold;margin-bottom:10px">✨ 当日BUFF</div>
+                    <div id="logBuffs">正在计算...</div>
+                </div>
+                <div>
+                    <div style="font-size:16px;font-weight:bold;margin-bottom:10px">⚠️ 当日DEBUFF</div>
+                    <div id="logDebuffs">正在计算...</div>
+                </div>
+            `;
+            document.getElementById('logDetailBody').innerHTML=html;
+            document.getElementById('logDetailModal').style.display='flex';
+            // 这里可以根据当日数据计算BUFF/DEBUFF
+            setTimeout(()=>{
+                const buffHtml=log.wakeTime<'07:00'?'<span class="debuff-tag">🟢 早起BUFF</span>':'<span style="color:var(--text-dim)">无BUFF</span>';
+                const debuffHtml='<span style="color:var(--text-dim)">参考状态页面</span>';
+                document.getElementById('logBuffs').innerHTML=buffHtml;
+                document.getElementById('logDebuffs').innerHTML=debuffHtml;
+            },100);
+        }
+        function closeLogDetail(){document.getElementById('logDetailModal').style.display='none';}
+        
+        // Boss详情
+        function showBossDetail(boss){
+            document.getElementById('bossDetailTitle').textContent=boss.icon+' '+boss.name;
+            const defeatedCount=(gameData.bossDefeated&&gameData.bossDefeated[boss.id])||0;
+            const stars='⭐'.repeat(boss.diff);
+            document.getElementById('bossDetailBody').innerHTML=`
+                <div style="margin-bottom:15px">
+                    <div style="color:var(--gold);margin-bottom:10px">${stars} 难度${boss.diff}星</div>
+                    <div style="margin-bottom:10px">${boss.desc}</div>
+                </div>
+                <div style="background:rgba(255,215,0,0.1);padding:15px;border-radius:8px;margin-bottom:15px">
+                    <div style="font-weight:bold;margin-bottom:8px">💡 应对策略</div>
+                    <div style="font-size:14px">${boss.tips}</div>
+                </div>
+                <div style="text-align:center;padding:20px;background:rgba(255,255,255,0.05);border-radius:8px">
+                    <div style="font-size:32px;margin-bottom:10px">${defeatedCount}</div>
+                    <div style="color:var(--text-dim)">已战胜次数</div>
+                </div>
+                <button class="save-btn" style="margin-top:20px;width:100%" onclick="recordBossWin('${boss.id}')">⚔️ 记录胜利</button>
+            `;
+            document.getElementById('bossDetailModal').style.display='flex';
+        }
+        function recordBossWin(bossId){
+            if(!gameData.bossDefeated)gameData.bossDefeated={};
+            gameData.bossDefeated[bossId]=(gameData.bossDefeated[bossId]||0)+1;
+            gameData.exp+=20;
+            gameData.levelExp=(gameData.levelExp||0)+20;
+            checkAllAchievements();
+            checkLevelUp();
+            saveData();
+            render();
+            closeBossDetail();
+            showModal('⚔️','战斗胜利!','成功战胜Boss! +20 EXP');
+        }
+        function closeBossDetail(){document.getElementById('bossDetailModal').style.display='none';}
+        
+        function render(){
+            try{
+            // 更新段位（静默模式，不显示提示）
+            updateRank(true);
+            const currentRank=RANKS[gameData.rank||0];
+            const nextRank=RANKS[(gameData.rank||0)+1];
+            
+            // v5.0 段位显示
+            const rankBadge=document.getElementById('rankBadge');
+            rankBadge.style.color=currentRank.color;
+            if(currentRank.glow){
+                rankBadge.style.boxShadow=`0 0 30px ${currentRank.glow}, inset 0 0 20px ${currentRank.glow}`;
+            }
+            
+            // 使用真实段位图片
+            const rankIcon=document.getElementById('rankIcon');
+            if(rankIcon&&currentRank.img){
+                rankIcon.src=currentRank.img;
+            }
+            
+            document.getElementById('rankTier').textContent=currentRank.tier;
+            document.getElementById('rankTier').style.color=currentRank.color;
+            document.getElementById('rankName').textContent=currentRank.name;
+            document.getElementById('rankName').style.color=currentRank.color;
+            
+            // 段位描述
+            const rankDescs={
+                '混子黑铁':'过去的你，浑浑噩噩',
+                '努力黄铜':'认真努力，踏实前行',
+                '初立白银':'站稳脚跟，有了底气',
+                '立足黄金':'立足社会，开始发光',
+                '进步铂金':'不断进步，持续成长',
+                '自足钻石':'自给自足，经济独立',
+                '起色大师':'小有起色，事业稳定',
+                '月万宗师':'月入过万，破茧成蝶',
+                '九转王者':'王者归来，完成蜕变'
+            };
+            document.getElementById('rankDesc').textContent=rankDescs[currentRank.tier]||'继续加油！';
+            
+            if(nextRank){
+                const gap=nextRank.minLevel-(gameData.level||1);
+                document.getElementById('rankLevelGap').textContent=gap>0?gap:0;
+                const progress=Math.min(100,((gameData.level||1)-currentRank.minLevel)/(nextRank.minLevel-currentRank.minLevel)*100);
+                document.getElementById('rankProgress').style.width=progress+'%';
+                
+                // 如果是王者就特殊显示
+                if(currentRank.special){
+                    document.getElementById('rankProgressText').innerHTML='🎉 已达巅峰！九转成人！';
+                }else{
+                    document.getElementById('rankProgressText').innerHTML='距离 <strong>'+nextRank.name+'</strong> 还需 <span id="rankLevelGap">'+gap+'</span> 级';
+                }
+            }else{
+                document.getElementById('rankProgressText').innerHTML='🎉 已达巅峰！九转成人！';
+                document.getElementById('rankProgress').style.width='100%';
+            }
+            
+            // 等级信息
+            document.getElementById('dayDisplay').textContent='🎄 Day '+gameData.day+' 🎁';
+            document.getElementById('headerLevel').textContent='Lv.'+(gameData.level||1);
+            document.getElementById('currentLevel').textContent=gameData.level||1;
+            let expNeeded;
+            // v5.0 经验曲线
+            const currentLevel=gameData.level||1;
+            if(currentLevel<=3)expNeeded=150;
+            else if(currentLevel<=7)expNeeded=200;
+            else if(currentLevel<=11)expNeeded=300;
+            else if(currentLevel<=15)expNeeded=400;
+            else if(currentLevel<=19)expNeeded=500;
+            else if(currentLevel<=23)expNeeded=600;
+            else if(currentLevel<=26)expNeeded=700;
+            else if(currentLevel===27||currentLevel===28)expNeeded=800;
+            else if(currentLevel===29)expNeeded=1000;
+            else expNeeded=1500;
+            document.getElementById('levelExpValue').textContent=(gameData.levelExp||0)+'/'+expNeeded;
+            document.getElementById('levelExpBar').style.width=((gameData.levelExp||0)/expNeeded*100)+'%';
+            
+            // 更新等级奖励提示
+            let nextReward='升级奖励: HP+10, MP+10, 全属性+2';
+            if((gameData.level||1)===5||(gameData.level||1)===10||(gameData.level||1)===15||(gameData.level||1)===20){
+                nextReward+=' | 🎁下一级所需经验提升！';
+            }
+            document.getElementById('levelBonus').textContent=nextReward;
+            
+            document.getElementById('hpValue').textContent=gameData.hp+'/100';document.getElementById('hpBar').style.width=gameData.hp+'%';
+            document.getElementById('mpValue').textContent=gameData.mp+'/100';document.getElementById('mpBar').style.width=gameData.mp+'%';
+            document.getElementById('expValue').textContent=gameData.exp+'/1000';document.getElementById('expBar').style.width=gameData.exp/10+'%';
+            const icons={'体质':'💪','精神':'🧠','魅力':'✨','智力':'📚','意志':'🔥','社交':'👥','财富':'💰','技能':'🛠️'};
+            let a='';for(const[n,v]of Object.entries(gameData.attributes)){a+='<div class="stat-item"><div class="stat-header"><span>'+icons[n]+' '+n+'</span><span>'+v+'/100</span></div><div class="stat-bar"><div class="stat-fill attr" style="width:'+v+'%"></div></div></div>';}document.getElementById('attributesList').innerHTML=a;
+            let d='';for(const[n,x]of Object.entries(gameData.debuffs)){d+='<div class="debuff-tag '+(x?'active':'cleared')+'" onclick="toggleDebuff(\''+n+'\')">'+(x?'🔴':'✅')+' '+n+'</div>';}document.getElementById('debuffList').innerHTML=d;
+            document.getElementById('equipmentList').innerHTML='<div class="task-item"><div class="task-header"><span class="task-title">⭐⭐⭐ 顶配电脑</span><span class="task-exp">SSR</span></div></div><div class="task-item"><div class="task-header"><span class="task-title">⭐⭐⭐ AI工具</span><span class="task-exp">SSR</span></div></div>';
+            const tasks=[{id:'water',name:'💧 喝水2升',exp:5},{id:'meals',name:'🍽️ 吃2顿饭',exp:5},{id:'wake',name:'⏰ 记录起床',exp:5}];let tk='';tasks.forEach(t=>{const c=gameData.tasks?.daily?.[t.id]||false;tk+='<div class="task-check"><div class="checkbox '+(c?'checked':'')+'" onclick="toggleTask(\''+t.id+'\')"></div><span>'+t.name+'</span><span style="margin-left:auto;color:var(--gold);font-size:12px">+'+t.exp+'</span></div>';});document.getElementById('dailyTasks').innerHTML=tk;
+            
+            // v5.0 活跃度显示
+            const activeScore=gameData.dailyActiveScore||0;
+            document.getElementById('activeScore').textContent=activeScore;
+            document.getElementById('activeProgress').style.width=activeScore+'%';
+            let activeLevel='🔴 混子',activeReward='无奖励';
+            if(activeScore>=95){activeLevel='🟣 完美';activeReward='+30 EXP + 🎁稀有宝箱';}
+            else if(activeScore>=80){activeLevel='🔵 优秀';activeReward='+20 EXP + 🎁精良宝箱';}
+            else if(activeScore>=60){activeLevel='🟢 良好';activeReward='+10 EXP + 🎁普通宝箱';}
+            else if(activeScore>=40){activeLevel='🟡 及格';activeReward='+5 EXP';}
+            else if(activeScore>=20){activeLevel='🟠 摸鱼';activeReward='+2 EXP';}
+            document.getElementById('activeLevel').textContent=activeLevel;
+            document.getElementById('activeReward').textContent=activeReward;
+            if(gameData.lifeHabits){
+                document.getElementById('check_washFace').classList.toggle('checked',gameData.lifeHabits.washFace||false);
+                document.getElementById('check_breakfast').classList.toggle('checked',gameData.lifeHabits.breakfast||false);
+                document.getElementById('check_lunch').classList.toggle('checked',gameData.lifeHabits.lunch||false);
+                document.getElementById('check_dinner').classList.toggle('checked',gameData.lifeHabits.dinner||false);
+                document.getElementById('check_shower').classList.toggle('checked',gameData.lifeHabits.shower||false);
+            }
+            let ch=gameData.day<=30?'🎄 第一章:生存期 (Day 1-30)':gameData.day<=60?'🎁 第二章:恢复期 (Day 31-60)':gameData.day<=90?'⭐ 第三章:启动期 (Day 61-90)':'🚀 第四章:腾飞期 (Day 91+)';
+            document.getElementById('currentChapter').innerHTML='<div style="font-size:18px;font-weight:bold">'+ch+'</div><div style="margin-top:10px"><div class="stat-bar"><div class="stat-fill exp" style="width:'+(gameData.day%30)/30*100+'%"></div></div></div><div style="font-size:12px;color:var(--text-dim);margin-top:5px">Day '+gameData.day+'/30</div>';
+            
+            // 主线任务渲染 - 根据等级解锁
+            const mainTasks=gameData.tasks.main||[];
+            let mainHtml='';
+            mainTasks.forEach((task,idx)=>{
+                const isLocked=!task.unlocked&&task.level>currentLevel;
+                const progress=task.progress||0;
+                const percent=Math.min(100,(progress/task.target)*100);
+                const typeTag=task.type?`<span style="font-size:11px;padding:2px 6px;background:rgba(255,215,0,0.2);border-radius:8px;margin-left:5px">${task.type}</span>`:'';
+                mainHtml+=`<div class="task-item ${task.completed?'completed':''} ${isLocked?'locked':''}">
+                    <div class="task-header">
+                        <span class="task-title">${isLocked?'🔒':'📍'} ${task.completed?'✅':''} Lv.${task.level} ${task.name}${typeTag}</span>
+                        <span class="task-exp">+${task.reward.exp}EXP${task.reward.money?` +¥${task.reward.money}`:''}</span>
+                    </div>
+                    ${!isLocked?`<div class="stat-bar" style="margin-top:8px">
+                        <div class="stat-fill ${task.completed?'hp':'exp'}" style="width:${task.completed?100:percent}%"></div>
+                    </div>
+                    <div style="font-size:12px;color:var(--text-dim);margin-top:5px">${progress}/${task.target}</div>`:`<div style="font-size:12px;color:var(--text-dim);margin-top:5px">需要Lv.${task.level}解锁</div>`}
+                </div>`;
+            });
+            document.getElementById('mainTasks').innerHTML=mainHtml||'<div class="empty-state"><div class="empty-icon">📋</div><div>暂无主线任务</div></div>';
+            
+            // 支线任务渲染 - 按类型分组
+            const sideTasks=gameData.tasks.side||[];
+            const sideTypes={'基础':'🌱','习惯':'⏰','成长':'🌟','学习':'📚','财富':'💰','社交':'👥','战斗':'⚔️','成就':'🏆','记录':'📝','挑战':'💪','重要':'⭐'};
+            let sideByType={};
+            sideTasks.forEach(task=>{
+                const type=task.type||'其他';
+                if(!sideByType[type])sideByType[type]=[];
+                sideByType[type].push(task);
+            });
+            let sideHtml='';
+            Object.keys(sideByType).forEach(type=>{
+                const icon=sideTypes[type]||'📌';
+                sideHtml+=`<div style="margin-top:15px"><div style="font-size:14px;font-weight:bold;color:var(--gold);margin-bottom:10px">${icon} ${type}</div>`;
+                sideByType[type].forEach((task,idx)=>{
+                    const globalIdx=sideTasks.indexOf(task);
+                    sideHtml+=`<div class="task-item ${task.completed?'completed':''}">
+                        <div class="task-check">
+                            <div class="checkbox ${task.completed?'checked':''}" onclick="toggleSideTask(${globalIdx})"></div>
+                            <span style="${task.completed?'text-decoration:line-through;color:var(--text-dim)':''}">${task.name}</span>
+                        </div>
+                        <div style="margin-top:5px;font-size:12px;color:var(--gold)">奖励: +${task.reward.exp}EXP</div>
+                    </div>`;
+                });
+                sideHtml+=`</div>`;
+            });
+            document.getElementById('sideTasks').innerHTML=sideHtml||'<div class="empty-state"><div class="empty-icon">📌</div><div>暂无支线任务</div></div>';
+            document.getElementById('familyList').innerHTML=(gameData.family||[{name:'父亲',type:'家人',intimacy:80},{name:'母亲',type:'家人',intimacy:60}]).map((f,i)=>`<div class="social-contact"><div class="contact-header"><span class="contact-name">👨‍👩‍👦 ${f.name}</span><span class="contact-type">${f.type}</span><span style="cursor:pointer;margin-left:10px" onclick="deleteFamily(${i})">🗑️</span></div><div class="intimacy-bar"><div class="intimacy-fill" style="width:${f.intimacy||50}%"></div></div>${f.notes?`<div style="font-size:11px;color:var(--text-dim);margin-top:5px">${f.notes}</div>`:''}</div>`).join('');
+            document.getElementById('communityList').innerHTML=gameData.communities.length===0?'<div class="empty-state"><div class="empty-icon">💬</div><div>还没有社群</div></div>':gameData.communities.map((c,i)=>'<div class="social-contact"><div class="contact-header"><span class="contact-name">'+c.name+'</span><span class="contact-type">'+c.platform+'</span><span style="cursor:pointer;margin-left:10px" onclick="deleteCommunity('+i+')">🗑️</span></div></div>').join('');
+            document.getElementById('newFriendsList').innerHTML=gameData.friends.length===0?'<div class="empty-state"><div class="empty-icon">🤝</div><div>还没有新朋友</div></div>':gameData.friends.map((f,i)=>'<div class="social-contact"><div class="contact-header"><span class="contact-name">'+f.name+'</span><span style="cursor:pointer;margin-left:10px" onclick="deleteFriend('+i+')">🗑️</span></div></div>').join('');
+            const allAch=[{id:'day1',name:'起步者',desc:'完成Day1',icon:'🌱'},{id:'week1',name:'七日坚持',desc:'连续7天',icon:'📅'},{id:'day30',name:'三十日勇士',desc:'完成第一章',icon:'⚔️'}];const unlocked=Object.keys(gameData.achievements).filter(k=>gameData.achievements[k]);document.getElementById('achievementProgress').innerHTML='<div style="font-size:24px;font-weight:bold;text-align:center;color:var(--gold)">'+unlocked.length+'/'+allAch.length+'</div>';document.getElementById('allAchievements').innerHTML=allAch.map(a=>'<div class="achievement-item '+(gameData.achievements[a.id]?'unlocked':'')+'"><div class="achievement-icon">'+(gameData.achievements[a.id]?a.icon:'🔒')+'</div><div class="achievement-info"><div class="achievement-name">'+a.name+'</div><div class="achievement-desc">'+a.desc+'</div></div></div>').join('');
+            document.getElementById('totalDays').textContent=gameData.day;document.getElementById('totalStudy').textContent=gameData.totalStudyHours;document.getElementById('totalIncome').textContent=gameData.totalIncome;
+            document.getElementById('historyList').innerHTML=gameData.dailyLogs.length===0?'<div class="empty-state"><div class="empty-icon">📝</div><div>还没有记录</div></div>':gameData.dailyLogs.slice(-5).reverse().map((l,i)=>{const realIndex=gameData.dailyLogs.length-1-i;return '<div class="history-item" onclick="showLogDetail('+realIndex+')" style="cursor:pointer"><div class="history-date">Day '+l.day+' | '+l.date+'</div><div class="history-stats"><div class="history-stat"><div class="history-stat-value">'+(l.wakeTime||'-')+'</div><div>起床</div></div><div class="history-stat"><div class="history-stat-value">'+(l.studyHours||0)+'h</div><div>学习</div></div><div class="history-stat"><div class="history-stat-value">'+(l.rating||'-')+'</div><div>状态</div></div></div><div style="text-align:center;font-size:11px;color:var(--text-dim);margin-top:5px">点击查看详情</div></div>';}).join('');
+            document.getElementById('bossLog').innerHTML=gameData.bossEncounters.length===0?'<div class="empty-state"><div class="empty-icon">⚔️</div><div>还没有Boss战</div></div>':gameData.bossEncounters.slice(-3).reverse().map(e=>'<div class="history-item"><div class="history-date">'+e.date+'</div><div>👹 '+e.boss+' - '+(e.won?'✅胜利':'❌失败')+'</div></div>').join('');
+            
+            // 财务渲染
+            document.getElementById('currentMoney').textContent='¥'+(gameData.money||0).toFixed(2);
+            document.getElementById('totalIncomeDisplay').textContent='¥'+(gameData.totalIncome||0).toFixed(2);
+            document.getElementById('totalExpenseDisplay').textContent='¥'+(gameData.totalExpense||0).toFixed(2);
+            const trans=gameData.transactions||[];
+            document.getElementById('transactionsList').innerHTML=trans.length===0?'<div class="empty-state"><div class="empty-icon">💰</div><div>还没有记录</div></div>':trans.slice(-10).reverse().map(t=>'<div class="transaction-item"><div class="transaction-desc"><div>'+t.note+'</div><div class="transaction-date">'+t.date+'</div></div><div class="transaction-amount '+(t.type==='income'?'income':'expense')+'">'+(t.type==='income'?'+':'-')+'¥'+t.amount.toFixed(2)+'</div></div>').join('');
+            
+            // 笔记渲染
+            const notes=gameData.notes||[];
+            document.getElementById('notesList').innerHTML=notes.length===0?'<div class="empty-state"><div class="empty-icon">📝</div><div>还没有笔记</div></div>':notes.map((n,i)=>'<div class="custom-note"><div class="custom-note-title">'+n.title+' <span style="float:right;cursor:pointer" onclick="deleteNote('+i+')">🗑️</span></div><div class="custom-note-content">'+n.content+'</div></div>').join('');
+            
+            // 目标渲染
+            const goals=gameData.goals||[];
+            document.getElementById('goalsList').innerHTML=goals.length===0?'<div class="empty-state"><div class="empty-icon">🎯</div><div>还没有目标</div></div>':goals.map((g,i)=>'<div class="custom-goal"><span class="goal-checkbox '+(g.completed?'checked':'')+'" onclick="toggleGoal('+i+')"></span><span style="'+(g.completed?'text-decoration:line-through;color:var(--text-dim)':'')+'">'+ g.text+'</span><span style="float:right;cursor:pointer" onclick="deleteGoal('+i+')">🗑️</span></div>').join('');
+            
+            // 装备渲染
+            if(!gameData.equipment)gameData.equipment={};
+            const equip=gameData.equipment;
+            ['weapon','armor','accessory1','accessory2','tool1','tool2'].forEach(slot=>{
+                const slotEl=document.getElementById('slot_'+slot);
+                if(equip[slot]&&equip[slot].name){
+                    slotEl.textContent=equip[slot].name;
+                    slotEl.classList.remove('empty');
+                    const parent=slotEl.parentElement;
+                    const existing=parent.querySelector('.slot-rarity');
+                    if(existing)existing.remove();
+                    const rarityEl=document.createElement('div');
+                    rarityEl.className='slot-rarity '+equip[slot].rarity.toLowerCase();
+                    rarityEl.textContent=equip[slot].rarity;
+                    parent.appendChild(rarityEl);
+                }else{
+                    slotEl.textContent='空';
+                    slotEl.classList.add('empty');
+                    const parent=slotEl.parentElement;
+                    const existing=parent.querySelector('.slot-rarity');
+                    if(existing)existing.remove();
+                }
+            });
+            
+            // 装备库存渲染
+            const inventory=Object.keys(EQUIPMENT_LIB);
+            let invHtml='';
+            inventory.forEach(name=>{
+                const item=EQUIPMENT_LIB[name];
+                const equipped=Object.values(equip).some(e=>e&&e.name===name);
+                if(!equipped){
+                    const effectStr=Object.entries(item.effect).map(([k,v])=>`${k}+${v}`).join(', ');
+                    invHtml+=`<div class="equipment-inventory-item"><div><div style="font-weight:bold">${item.icon} ${name}</div><div style="font-size:12px;color:var(--text-dim)">${effectStr}</div></div><div class="slot-rarity ${item.rarity.toLowerCase()}">${item.rarity}</div></div>`;
+                }
+            });
+            document.getElementById('equipmentInventory').innerHTML=invHtml||'<div style="text-align:center;color:var(--text-dim);padding:20px">所有装备已装备</div>';
+            
+            // 装备加成计算
+            let bonus={};
+            Object.values(equip).forEach(item=>{
+                if(item&&EQUIPMENT_LIB[item.name]){
+                    const effect=EQUIPMENT_LIB[item.name].effect;
+                    for(let attr in effect){
+                        bonus[attr]=(bonus[attr]||0)+effect[attr];
+                    }
+                }
+            });
+            let bonusHtml='';
+            for(let attr in bonus){
+                bonusHtml+=`<div style="padding:8px;background:rgba(255,215,0,0.1);border-radius:6px;margin-bottom:8px"><span style="font-weight:bold">${attr}</span>: +${bonus[attr]}</div>`;
+            }
+            document.getElementById('equipmentBonus').innerHTML=bonusHtml||'<div style="text-align:center;color:var(--text-dim);padding:20px">暂无装备加成</div>';
+            
+            // 成就渲染
+            if(!gameData.achievementsUnlocked)gameData.achievementsUnlocked=[];
+            let achHtml='<div class="achievement-grid">';
+            let achCount=0;
+            for(let id in ACHIEVEMENTS){
+                const ach=ACHIEVEMENTS[id];
+                const unlocked=gameData.achievementsUnlocked.includes(id);
+                achHtml+=`<div class="achievement-card ${unlocked?'unlocked':''}">
+                    <div class="achievement-icon">${ach.icon}</div>
+                    <div class="achievement-name">${ach.name}</div>
+                    <div class="achievement-desc">${ach.desc}</div>
+                    <div class="achievement-reward">${unlocked?'✅ 已解锁':'🔒 未解锁'} | +${ach.reward} EXP</div>
+                </div>`;
+                achCount++;
+                if(achCount>=20)break; // 只显示前20个，避免过长
+            }
+            achHtml+='</div>';
+            document.getElementById('allAchievements').innerHTML=achHtml;
+            const achProgress=`已解锁 ${gameData.achievementsUnlocked.length}/${Object.keys(ACHIEVEMENTS).length} 个成就`;
+            document.getElementById('achievementProgress').innerHTML=`<div style="text-align:center;padding:20px;font-size:18px;font-weight:bold;color:var(--gold)">${achProgress}</div>`;
+            
+            // Boss库渲染
+            let bossHtml='';
+            BOSS_LIBRARY.forEach(boss=>{
+                const defeatedCount=(gameData.bossDefeated&&gameData.bossDefeated[boss.id])||0;
+                const stars='⭐'.repeat(boss.diff);
+                bossHtml+=`<div class="boss-card" onclick="showBossDetail(BOSS_LIBRARY.find(b=>b.id==='${boss.id}'))">
+                    <div class="boss-card-header">
+                        <div class="boss-card-title">${boss.icon} ${boss.name}</div>
+                        <div class="boss-difficulty">${stars}</div>
+                    </div>
+                    <div class="boss-desc">${boss.desc}</div>
+                    <div class="boss-stats">
+                        <div class="boss-stat">击败次数: <strong>${defeatedCount}</strong></div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('bossLibrary').innerHTML=bossHtml;
+            
+            // 朋友详细信息渲染
+            if(!gameData.friendsDetailed)gameData.friendsDetailed=[];
+            if(gameData.friendsDetailed.length>0){
+                let friendHtml='';
+                gameData.friendsDetailed.forEach((f,i)=>{
+                    friendHtml+=`<div class="social-contact" onclick="editFriend(${i})" style="cursor:pointer">
+                        <div class="contact-header">
+                            <span class="contact-name">🤝 ${f.name||'未命名'}</span>
+                            <span class="contact-type">${f.wechat?'📱':'👤'}</span>
+                        </div>
+                        <div class="intimacy-bar"><div class="intimacy-fill" style="width:${f.intimacy||50}%"></div></div>
+                        ${f.phone||f.wechat?`<div style="font-size:11px;color:var(--text-dim);margin-top:5px">${f.phone||''} ${f.wechat||''}</div>`:''}
+                        <div style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:5px">点击编辑</div>
+                    </div>`;
+                });
+                // 如果有详细朋友信息，替换简单的朋友列表
+                const friendListEl=document.getElementById('newFriendsList');
+                if(friendListEl&&friendHtml){
+                    friendListEl.innerHTML=friendHtml+'<button class="save-btn" onclick="editFriend(-1)" style="margin-top:15px">➕ 添加新朋友</button>';
+                }
+            }
+            
+            // v5.0 更新活跃度显示
+            updateActiveScore();
+            
+            }catch(error){
+                console.error('❌ Render错误:',error);
+                console.error('错误堆栈:',error.stack);
+                // 显示友好的错误提示
+                const errorMsg='页面渲染出错！\n错误: '+error.message+'\n\n请截图此信息并反馈。\n\n尝试刷新页面或清除数据重试。';
+                alert(errorMsg);
+            }
+        }
+        function toggleDebuff(n){
+            gameData.debuffs[n]=!gameData.debuffs[n];
+            if(!gameData.debuffs[n]){
+                gameData.exp+=50;
+                gameData.levelExp=(gameData.levelExp||0)+50;
+                
+                // 更新主线任务：清除3个Debuff
+                if(gameData.tasks.main){
+                    const task=gameData.tasks.main.find(t=>t.id==='clear3debuffs');
+                    if(task&&!task.completed){
+                        const clearedCount=Object.values(gameData.debuffs).filter(v=>!v).length;
+                        task.progress=clearedCount;
+                        if(task.progress>=task.target){
+                            task.completed=true;
+                            gameData.exp+=task.reward.exp;
+                            gameData.levelExp+=task.reward.exp;
+                            showModal('🎯','主线完成!',`"${task.name}"已完成! +${task.reward.exp}EXP`);
+                        }
+                    }
+                }
+                
+                checkLevelUp();
+                showModal('🎉','Debuff解除!','"'+n+'"已清除! +50 EXP');
+            }
+            saveData();
+            render();
+        }
+        function toggleTask(id){if(!gameData.tasks.daily)gameData.tasks.daily={};gameData.tasks.daily[id]=!gameData.tasks.daily[id];if(gameData.tasks.daily[id])gameData.exp+=5;saveData();render();}
+        
+        // v5.0 生活习惯系统
+        function toggleLifeHabit(habit){
+            if(!gameData.lifeHabits)gameData.lifeHabits={};
+            gameData.lifeHabits[habit]=!gameData.lifeHabits[habit];
+            calculateActiveScore();
+            saveData();
+            render();
+        }
+        
+        // v5.0 活跃度计算
+        function calculateActiveScore(){
+            if(!gameData.lifeHabits)gameData.lifeHabits={};
+            let score=0;
+            
+            // 生活基础 35分
+            if(gameData.lifeHabits.washFace)score+=10;
+            if(gameData.lifeHabits.breakfast)score+=5;
+            if(gameData.lifeHabits.lunch)score+=5;
+            if(gameData.lifeHabits.dinner)score+=5;
+            if(gameData.lifeHabits.shower)score+=10;
+            
+            // 学习工作 30分（通过日志记录）
+            const study=parseInt(document.querySelector('#studyHours .selected')?.dataset.value||0);
+            if(study>=1)score+=15;
+            if(study>=3)score+=15;
+            
+            // 娱乐放松 10分
+            const entertainment=parseInt(document.querySelector('#entertainmentTime .selected')?.dataset.value||0);
+            if(entertainment>=30)score+=10;
+            
+            // 每日任务 15分
+            const wakeTime=document.getElementById('wakeHour').value;
+            if(wakeTime)score+=5;
+            
+            const dailyCompleted=Object.values(gameData.tasks?.daily||{}).filter(v=>v).length;
+            score+=Math.min(10,dailyCompleted*5);
+            
+            gameData.dailyActiveScore=Math.min(100,score);
+            return score;
+        }
+        
+        function saveDailyLog(){
+            const wH=document.getElementById('wakeHour').value,wM=document.getElementById('wakeMinute').value,study=document.querySelector('#studyHours .selected')?.dataset.value||0,rating=document.querySelector('#statusRating .selected')?.dataset.value||0,income=parseFloat(document.getElementById('dailyIncome').value)||0,summary=document.getElementById('dailySummary').value;
+            const entertainment=parseInt(document.querySelector('#entertainmentTime .selected')?.dataset.value||0);
+            
+            // v5.0 计算活跃度
+            const activeScore=calculateActiveScore();
+            
+            // v5.0 记录娱乐日志
+            if(entertainment>0){
+                if(!gameData.entertainmentLog)gameData.entertainmentLog=[];
+                gameData.entertainmentLog.push({
+                    date:new Date().toLocaleDateString('zh-CN'),
+                    duration:entertainment,
+                    type:'daily',
+                    happiness:Math.floor(rating/2)+5, // 根据状态评分估算快乐度
+                    note:summary
+                });
+            }
+            
+            gameData.dailyLogs.push({day:gameData.day,date:new Date().toLocaleDateString('zh-CN'),wakeTime:wH?wH+':'+(wM||'00'):'',studyHours:parseInt(study),rating:parseInt(rating),income,summary,activeScore});
+            gameData.totalStudyHours+=parseInt(study);
+            gameData.totalIncome+=income;
+            gameData.consecutiveDays++;
+            
+            // v5.0 活跃度奖励
+            let activeBonus=0;
+            if(activeScore>=60)activeBonus=10;
+            if(activeScore>=80)activeBonus=20;
+            if(activeScore>=95)activeBonus=30;
+            
+            // v5.0 发放宝箱
+            grantChest(activeScore);
+            
+            const gainedExp=20+(study>=2?20:0)+(income>0?30:0)+activeBonus;
+            gameData.exp+=gainedExp;
+            gameData.levelExp=(gameData.levelExp||0)+gainedExp;
+            gameData.mp=Math.min(100,gameData.mp+parseInt(rating));
+            
+            // 更新主线任务进度
+            if(!gameData.tasks.main)gameData.tasks.main=[];
+            let completedTasks=[];
+            gameData.tasks.main.forEach(task=>{
+                if(task.completed||!task.unlocked)return;
+                // 连续记录类
+                if(task.id.includes('consecutive')||task.id==='start_journey'){
+                    task.progress=gameData.consecutiveDays;
+                }
+                // 学习时长类
+                if(task.id.includes('study')){
+                    task.progress=gameData.totalStudyHours;
+                }
+                // 收入类
+                if(task.id.includes('income')||task.id==='rebirth_complete'){
+                    task.progress=gameData.totalIncome;
+                }
+                // 章节完成类
+                if(task.id.includes('chapter')&&task.id.includes('complete')){
+                    task.progress=gameData.day;
+                }
+                // 检查是否完成
+                if(task.progress>=task.target){
+                    task.completed=true;
+                    gameData.exp+=task.reward.exp;
+                    gameData.levelExp+=task.reward.exp;
+                    if(task.reward.money){
+                        gameData.money+=task.reward.money;
+                    }
+                    completedTasks.push({name:task.name,reward:task.reward});
+                }
+            });
+            // 显示完成的任务
+            if(completedTasks.length>0){
+                completedTasks.forEach(t=>{
+                    showModal('🎯','主线完成!',`"${t.name}"已完成! +${t.reward.exp}EXP${t.reward.money?` +¥${t.reward.money}`:''}`);
+                });
+            }
+            
+            if(!gameData.achievements.day1){gameData.achievements.day1=true;gameData.exp+=50;gameData.levelExp=(gameData.levelExp||0)+50;}
+            if(gameData.consecutiveDays>=7&&!gameData.achievements.week1){gameData.achievements.week1=true;gameData.exp+=100;gameData.levelExp=(gameData.levelExp||0)+100;}
+            if(gameData.day>=30&&!gameData.achievements.day30){gameData.achievements.day30=true;gameData.exp+=200;gameData.levelExp=(gameData.levelExp||0)+200;showModal('🏆','成就达成!','完成第一章! +200EXP');}
+            
+            // v4.0 成就检测
+            checkAllAchievements();
+            // 单日学习成就
+            if(parseInt(study)>=5)checkAchievement('study5day');
+            // 单日收入成就
+            if(income>=100)checkAchievement('income100day');
+            if(income>=500)checkAchievement('income500day');
+            
+            checkLevelUp();
+            gameData.day++;
+            gameData.tasks.daily={};
+            saveData();
+            showModal('📝','记录成功!','Day '+(gameData.day-1)+' 完成!');
+            document.getElementById('wakeHour').value='';
+            document.getElementById('wakeMinute').value='';
+            document.getElementById('dailyIncome').value='';
+            document.getElementById('dailySummary').value='';
+            document.querySelectorAll('.rating-btn').forEach(b=>b.classList.remove('selected'));
+            render();
+        }
+        function addCommunity(){const n=prompt('社群名称:');if(!n)return;const p=prompt('平台:')||'未知';gameData.communities.push({name:n,platform:p});saveData();render();showModal('💬','添加成功!','加入: '+n);}
+        function addFriend(){const n=prompt('昵称:');if(!n)return;const isFirst=gameData.friends.length===0;gameData.friends.push({name:n,source:'社群'});if(isFirst&&gameData.tasks.side){const task=gameData.tasks.side.find(t=>t.id==='addFriend');if(task&&!task.completed){task.completed=true;gameData.exp+=task.reward.exp;gameData.levelExp=(gameData.levelExp||0)+task.reward.exp;checkLevelUp();showModal('📌','支线完成!',`"${task.name}"已完成! +${task.reward.exp}EXP`);}}saveData();render();if(!isFirst)showModal('🤝','添加成功!','新朋友: '+n);}
+        function addBossEncounter(){const bosses=['惰性之龙','重开恶魔','遗忘之雾','比较巨人','舒适陷阱'];const idx=prompt('哪个Boss? 1-惰性之龙 2-重开恶魔 3-遗忘之雾 4-比较巨人 5-舒适陷阱');if(!idx)return;const won=confirm('你赢了吗?');const isFirst=gameData.bossEncounters.length===0;gameData.bossEncounters.push({date:new Date().toLocaleDateString('zh-CN'),boss:bosses[parseInt(idx)-1]||`Boss${idx}`,won});if(won){gameData.exp+=20;gameData.levelExp=(gameData.levelExp||0)+20;if(isFirst&&gameData.tasks.side){const task=gameData.tasks.side.find(t=>t.id==='defeatBoss');if(task&&!task.completed){task.completed=true;gameData.exp+=task.reward.exp;gameData.levelExp+=task.reward.exp;checkLevelUp();showModal('📌','支线完成!',`"${task.name}"已完成! +${task.reward.exp}EXP`);}}checkLevelUp();}saveData();render();if(!isFirst)showModal(won?'⚔️':'💀',won?'胜利!':'失败',won?'+20 EXP':'下次加油!');}
+        function quickLog(){document.querySelector('[data-section="daily"]').click();window.scrollTo({top:0,behavior:'smooth'});}
+        function showModal(i,t,d){document.getElementById('modalIcon').textContent=i;document.getElementById('modalTitle').textContent=t;document.getElementById('modalDesc').textContent=d;document.getElementById('modal').classList.add('show');}
+        function closeModal(){document.getElementById('modal').classList.remove('show');}
+        
+        // 等级系统 - 前期容易后期难，升级时解锁主线任务
+        function checkLevelUp(){
+            if(!gameData.level)gameData.level=1;
+            if(!gameData.levelExp)gameData.levelExp=0;
+            
+            // v5.0 新经验曲线（90天平衡）
+            let expNeeded;
+            const level=gameData.level;
+            if(level<=3)expNeeded=150;        // 黑铁 Lv.1-3
+            else if(level<=7)expNeeded=200;   // 黄铜 Lv.4-7
+            else if(level<=11)expNeeded=300;  // 白银 Lv.8-11
+            else if(level<=15)expNeeded=400;  // 黄金 Lv.12-15
+            else if(level<=19)expNeeded=500;  // 铂金 Lv.16-19
+            else if(level<=23)expNeeded=600;  // 钻石 Lv.20-23
+            else if(level<=26)expNeeded=700;  // 大师 Lv.24-26
+            else if(level===27||level===28)expNeeded=800;  // 宗师 Lv.27-28
+            else if(level===29)expNeeded=1000; // 宗师I Lv.29
+            else expNeeded=1500;              // 王者 Lv.30
+            
+            if(gameData.levelExp>=expNeeded){
+                gameData.level++;
+                gameData.levelExp-=expNeeded;
+                gameData.hp=Math.min(100,gameData.hp+10);
+                gameData.mp=Math.min(100,gameData.mp+10);
+                for(let attr in gameData.attributes){
+                    gameData.attributes[attr]=Math.min(100,gameData.attributes[attr]+2);
+                }
+                
+                // 解锁当前等级的主线任务
+                if(gameData.tasks.main){
+                    let unlocked=[];
+                    gameData.tasks.main.forEach(task=>{
+                        if(task.level===gameData.level&&!task.unlocked){
+                            task.unlocked=true;
+                            unlocked.push(task.name);
+                        }
+                    });
+                    if(unlocked.length>0){
+                        showModal('🎯','新主线解锁!',`Lv.${gameData.level}主线任务已解锁: ${unlocked.join(', ')}`);
+                    }else{
+                        showModal('⭐','升级了!','恭喜升到Lv.'+gameData.level+'! HP+10, MP+10, 全属性+2');
+                    }
+                }else{
+                    showModal('⭐','升级了!','恭喜升到Lv.'+gameData.level+'! HP+10, MP+10, 全属性+2');
+                }
+                
+                saveData();
+                checkLevelUp();
+            }
+        }
+        
+        // 删除功能
+        function deleteFamily(index){
+            if(confirm('确定删除这位家人吗?')){
+                if(!gameData.family)gameData.family=[];
+                gameData.family.splice(index,1);
+                saveData();
+                render();
+            }
+        }
+        
+        function deleteCommunity(index){
+            if(confirm('确定删除这个社群吗?')){
+                gameData.communities.splice(index,1);
+                saveData();
+                render();
+            }
+        }
+        
+        function deleteFriend(index){
+            if(confirm('确定删除这个朋友吗?')){
+                gameData.friends.splice(index,1);
+                saveData();
+                render();
+            }
+        }
+        
+        // 支线任务完成
+        function toggleSideTask(index){
+            if(!gameData.tasks.side)return;
+            const task=gameData.tasks.side[index];
+            if(task.completed)return;
+            task.completed=true;
+            gameData.exp+=task.reward.exp;
+            gameData.levelExp=(gameData.levelExp||0)+task.reward.exp;
+            checkLevelUp();
+            saveData();
+            render();
+            showModal('📌','支线完成!',`"${task.name}"已完成! +${task.reward.exp}EXP`);
+        }
+        
+        // 财务系统
+        function addTransaction(){
+            const amount=parseFloat(document.getElementById('transactionAmount').value);
+            const item=document.getElementById('transactionItem').value||'未命名商品';
+            const type=document.querySelector('#finance .rating-selector .selected')?.dataset.value;
+            const category=document.querySelector('#categorySelector .selected')?.dataset.value||'other';
+            const platform=document.querySelector('#platformSelector .selected')?.dataset.value||'other';
+            const necessity=document.querySelector('#necessitySelector .selected')?.dataset.value||'want';
+            const note=document.getElementById('transactionNote').value||'';
+            
+            if(!amount||amount<=0){showModal('❌','错误','请输入有效金额');return;}
+            if(!type){showModal('❌','错误','请选择收入/支出类型');return;}
+            
+            if(!gameData.transactions)gameData.transactions=[];
+            if(!gameData.shoppingCart)gameData.shoppingCart=[];
+            if(!gameData.money)gameData.money=0;
+            if(!gameData.totalExpense)gameData.totalExpense=0;
+            
+            if(type==='income'){
+                gameData.money+=amount;
+                gameData.totalIncome+=amount;
+            }else{
+                gameData.money-=amount;
+                gameData.totalExpense+=amount;
+                // v5.0 保存到购物车（仅支出）
+                gameData.shoppingCart.push({
+                    item,
+                    amount,
+                    category,
+                    platform,
+                    necessity,
+                    note,
+                    date:new Date().toLocaleDateString('zh-CN'),
+                    time:new Date().toLocaleTimeString('zh-CN')
+                });
+            }
+            
+            gameData.transactions.push({
+                amount,
+                type,
+                item,
+                category,
+                platform,
+                necessity,
+                note,
+                date:new Date().toLocaleDateString('zh-CN')
+            });
+            
+            document.getElementById('transactionAmount').value='';
+            document.getElementById('transactionItem').value='';
+            document.getElementById('transactionNote').value='';
+            document.querySelectorAll('#finance .rating-selector .rating-btn').forEach(b=>b.classList.remove('selected'));
+            document.querySelectorAll('#categorySelector .rating-btn').forEach(b=>b.classList.remove('selected'));
+            document.querySelectorAll('#platformSelector .rating-btn').forEach(b=>b.classList.remove('selected'));
+            document.querySelectorAll('#necessitySelector .rating-btn').forEach(b=>b.classList.remove('selected'));
+            
+            saveData();
+            render();
+            showModal('💰','记录成功',(type==='income'?'+¥':'-¥')+amount.toFixed(2)+'\n'+item);
+        }
+        
+        function setInitialMoney(){
+            const amount=parseFloat(document.getElementById('initialMoney').value);
+            if(isNaN(amount)){showModal('❌','错误','请输入有效金额');return;}
+            gameData.money=amount;
+            document.getElementById('initialMoney').value='';
+            saveData();
+            render();
+            showModal('💰','设置成功','初始金钱: ¥'+amount.toFixed(2));
+        }
+        
+        // 笔记系统
+        function addNote(){
+            const title=document.getElementById('noteTitle').value;
+            const content=document.getElementById('noteContent').value;
+            if(!title||!content){showModal('❌','错误','请填写标题和内容');return;}
+            if(!gameData.notes)gameData.notes=[];
+            
+            // 检查是否是第一篇笔记
+            const isFirst=gameData.notes.length===0;
+            
+            gameData.notes.push({title,content,date:new Date().toLocaleDateString('zh-CN')});
+            document.getElementById('noteTitle').value='';
+            document.getElementById('noteContent').value='';
+            
+            // 完成支线任务
+            if(isFirst&&gameData.tasks.side){
+                const task=gameData.tasks.side.find(t=>t.id==='writeNote');
+                if(task&&!task.completed){
+                    task.completed=true;
+                    gameData.exp+=task.reward.exp;
+                    gameData.levelExp=(gameData.levelExp||0)+task.reward.exp;
+                    checkLevelUp();
+                    showModal('📌','支线完成!',`"${task.name}"已完成! +${task.reward.exp}EXP`);
+                }
+            }
+            
+            saveData();
+            render();
+            if(!isFirst)showModal('📝','保存成功','笔记已保存');
+        }
+        
+        function deleteNote(index){
+            if(confirm('确定删除这条笔记吗?')){
+                gameData.notes.splice(index,1);
+                saveData();
+                render();
+            }
+        }
+        
+        // 目标系统
+        function addGoal(){
+            const text=document.getElementById('goalInput').value;
+            if(!text){showModal('❌','错误','请输入目标内容');return;}
+            if(!gameData.goals)gameData.goals=[];
+            
+            // 检查是否是第一个目标
+            const isFirst=gameData.goals.length===0;
+            
+            gameData.goals.push({text,completed:false});
+            document.getElementById('goalInput').value='';
+            
+            // 完成支线任务
+            if(isFirst&&gameData.tasks.side){
+                const task=gameData.tasks.side.find(t=>t.id==='setGoal');
+                if(task&&!task.completed){
+                    task.completed=true;
+                    gameData.exp+=task.reward.exp;
+                    gameData.levelExp=(gameData.levelExp||0)+task.reward.exp;
+                    checkLevelUp();
+                    showModal('📌','支线完成!',`"${task.name}"已完成! +${task.reward.exp}EXP`);
+                }
+            }
+            
+            saveData();
+            render();
+            if(!isFirst)showModal('🎯','添加成功','新目标已添加');
+        }
+        
+        function toggleGoal(index){
+            gameData.goals[index].completed=!gameData.goals[index].completed;
+            if(gameData.goals[index].completed){
+                gameData.levelExp=(gameData.levelExp||0)+20;
+                checkLevelUp();
+                showModal('🎯','目标完成!','获得20经验值');
+            }
+            saveData();
+            render();
+        }
+        
+        function deleteGoal(index){
+            if(confirm('确定删除这个目标吗?')){
+                gameData.goals.splice(index,1);
+                saveData();
+                render();
+            }
+        }
+        
+        // 数据管理
+        function exportData(){
+            const dataStr=JSON.stringify(gameData,null,2);
+            const blob=new Blob([dataStr],{type:'application/json'});
+            const url=URL.createObjectURL(blob);
+            const a=document.createElement('a');
+            a.href=url;
+            a.download='zhugehui_data_'+new Date().toISOString().split('T')[0]+'.json';
+            a.click();
+            showModal('📤','导出成功','数据已导出');
+        }
+        
+        function importData(){
+            const input=document.createElement('input');
+            input.type='file';
+            input.accept='.json';
+            input.onchange=e=>{
+                const file=e.target.files[0];
+                const reader=new FileReader();
+                reader.onload=event=>{
+                    try{
+                        const data=JSON.parse(event.target.result);
+                        gameData=data;
+                        saveData();
+                        render();
+                        showModal('📥','导入成功','数据已导入');
+                    }catch(err){
+                        showModal('❌','导入失败','文件格式错误');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        function resetData(){
+            if(confirm('确定要重置所有数据吗？此操作不可恢复！')){
+                if(confirm('再次确认：真的要删除所有数据吗？')){
+                    localStorage.removeItem('zhugehui_xmas2');
+                    gameData={...defaultData};
+                    saveData();
+                    render();
+                    showModal('🔄','重置成功','数据已重置');
+                }
+            }
+        }
+        
+        // ==================== 事件监听器设置 ====================
+        document.querySelectorAll('.nav-tab').forEach(t=>{
+            t.addEventListener('click',()=>{
+                document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+                t.classList.add('active');
+                document.getElementById(t.dataset.section).classList.add('active');
+            });
+        });
+        
+        document.querySelectorAll('.rating-selector').forEach(s=>{
+            s.querySelectorAll('.rating-btn').forEach(b=>{
+                b.addEventListener('click',()=>{
+                    s.querySelectorAll('.rating-btn').forEach(x=>x.classList.remove('selected'));
+                    b.classList.add('selected');
+                    // v5.0 更新活跃度
+                    if(typeof updateActiveScore==='function')updateActiveScore();
+                });
+            });
+        });
+        
+        // v5.0 监听输入框变化更新活跃度
+        ['wakeHour','wakeMinute'].forEach(id=>{
+            document.getElementById(id).addEventListener('input',()=>{
+                if(typeof updateActiveScore==='function')updateActiveScore();
+            });
+        });
+        
+        // ==================== 初始化 ====================
+        checkLoginReward(); // v5.0 检查连续登录
+        render();setInterval(saveData,30000);
+    </script>
+</body>
+</html>
